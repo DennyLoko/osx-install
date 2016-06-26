@@ -109,8 +109,6 @@ install_casks () {
     echo "#######################################################"
     echo "# CASKS"
     echo "#######################################################"
-    brew_me_some caskroom/cask/brew-cask
-
     cask_me_some atom
     cask_me_some docker
     cask_me_some dropbox
