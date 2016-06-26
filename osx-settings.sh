@@ -1,6 +1,11 @@
 #!/bin/sh
 set -e
 
+echo ""
+echo "#######################################################"
+echo "# SETTINGS"
+echo "#######################################################"
+
 # Finder
 defaults write com.apple.finder AppleShowAllExtensions -boolean yes
 defaults write com.apple.finder PathBarRootAtHome -bool yes
