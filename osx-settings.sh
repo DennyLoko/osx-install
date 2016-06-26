@@ -3,15 +3,13 @@ set -e
 
 # Finder
 defaults write com.apple.finder AppleShowAllExtensions -boolean yes
-defaults write com.apple.finder AppleShowAllFiles -boolean yes
 defaults write com.apple.finder PathBarRootAtHome -bool yes
 defaults write com.apple.finder _FXShowPosixPathInTitle -bool yes
 
 # Dock
-defaults write com.apple.dock orientation -string "left"
 defaults write com.apple.dock autohide -boolean yes
 defaults write com.apple.dock magnification -boolean yes
-defaults write com.apple.dock largesize 65  # magnification factor
+defaults write com.apple.dock largesize 70
 
 # Make dock appear faster
 defaults write com.apple.dock autohide-delay -float 0
@@ -34,20 +32,8 @@ defaults write com.apple.menuextra.battery ShowPercent -string "YES"
 # 11: Launchpad
 # 12: Notification Center
 
-# Top left screen corner
-defaults write com.apple.dock wvous-tl-corner -int 6
-defaults write com.apple.dock wvous-tl-modifier -int 0
-
-# Top right screen corner
-defaults write com.apple.dock wvous-tr-corner -int 10
-defaults write com.apple.dock wvous-tr-modifier -int 0
-
 # Bottom left screen corner
-defaults write com.apple.dock wvous-bl-corner -int 0
-defaults write com.apple.dock wvous-bl-modifier -int 0
-
-# Bottom left screen corner
-defaults write com.apple.dock wvous-br-corner -int 4
+defaults write com.apple.dock wvous-br-corner -int 11
 defaults write com.apple.dock wvous-br-modifier -int 0
 
 killall Finder

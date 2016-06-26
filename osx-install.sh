@@ -76,7 +76,6 @@ install_tools () {
     check_brew_is_installed
 
     # Used by brew
-    brew_me_some ruby
     brew_me_some git
 
     # Tap some kegs
@@ -92,53 +91,17 @@ install_tools () {
     echo "#######################################################"
     echo "# INSTALLING BREW PACKAGES"
     echo "#######################################################"
-    brew_me_some python
-    brew_me_some vim
-    brew_me_some fish
-
-    brew_me_some bup
-    brew_me_some colordiff
-    brew_me_some cowsay
-    brew_me_some ctags
-    brew_me_some direnv
-    # brew_me_some fdupes
-    brew_me_some ffind
-    brew_me_some fish
     brew_me_some gcc
-    # brew_me_some homebrew/versions/gcc46
-    # brew_me_some gist
     brew_me_some gnupg
     brew_me_some graphviz
     brew_me_some hub
-    brew_me_some imagemagick
     brew_me_some jq
-    # brew_me_some leiningen
-    brew_me_some libevent
-    # brew_me_some homebrew/versions/mongodb24
-    brew_me_some moreutils
-    # brew_me_some mysql
-    # brew_me_some nginx
-    brew_me_some node
-    brew_me_some optipng
-    # brew_me_some par2
-    brew_me_some pdfgrep
-    brew_me_some pngquant
-    brew_me_some pv
-    # brew_me_some rabbitmq
-    brew_me_some reattach-to-user-namespace
-    brew_me_some redis
-    brew_me_some selecta
     brew_me_some ssh-copy-id
-    brew_me_some the_silver_searcher
-    brew_me_some tig
     brew_me_some tree
     brew_me_some unrar
+    brew_me_some vim
     brew_me_some watch
     brew_me_some wget
-    brew_me_some zeromq
-
-    brew_me_some macvim  # NOTE: requires a full Xcode
-    # brew_me_some elasticsearch  # TODO: requires Java
 }
 
 
@@ -149,47 +112,29 @@ install_casks () {
     echo "#######################################################"
     brew_me_some caskroom/cask/brew-cask
 
-    # cask_me_some 1password  # NOTE: purchased via App Store
-    cask_me_some adobe-photoshop-lightroom
-    cask_me_some alfred
-    cask_me_some appzapper
-    cask_me_some arq
-    cask_me_some calibre
-    cask_me_some daisydisk
-    # cask_me_some dash  # NOTE: purchased via App Store
-    cask_me_some divvy
+    cask_me_some atom
+    cask_me_some docker
     cask_me_some dropbox
     cask_me_some firefox
-    cask_me_some fluid
+    cask_me_some flixtools
     cask_me_some flux
-    # cask_me_some google-chrome  # NOTE: installed into /Applications manually, to overcome 1Password's sandboxed nature
-    cask_me_some gitx
+    cask_me_some google-chrome
     cask_me_some google-chrome-canary
-    cask_me_some heroku-toolbelt
     cask_me_some iterm2
-    cask_me_some karabiner
-    cask_me_some licecap
-    cask_me_some mailbox
     cask_me_some mailplane
-    cask_me_some marked
-    cask_me_some mongohub
-    cask_me_some nvalt
-    cask_me_some postgres
-    cask_me_some postico
-    cask_me_some rescuetime
-    cask_me_some robomongo
-    cask_me_some screenflow
-    cask_me_some screenhero
-    # cask_me_some sketch   # NOTE: purchased via App Store
+    cask_me_some messenger
+    cask_me_some mysqlworkbench
     cask_me_some skype
     cask_me_some slack
+    cask_me_some spectacle
     cask_me_some spotify
-    cask_me_some superduper
-    cask_me_some textexpander
+    cask_me_some telegram
+    cask_me_some toggldesktop
+    cask_me_some tunnelblick
+    cask_me_some utorrent
+    cask_me_some virtualbox
     cask_me_some vlc
-
-    # cask_me_some wireshark
-    # cask_me_some zooom  # zooom seems broken
+    cask_me_some whatsapp
 }
 
 
@@ -198,7 +143,6 @@ install_fonts () {
     echo "#######################################################"
     echo "# FONTS"
     echo "#######################################################"
-
     brew tap caskroom/fonts
 
     # The fonts
