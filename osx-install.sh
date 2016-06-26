@@ -93,7 +93,6 @@ install_tools () {
     echo "#######################################################"
     brew_me_some gcc
     brew_me_some gnupg
-    brew_me_some graphviz
     brew_me_some hub
     brew_me_some jq
     brew_me_some ssh-copy-id
