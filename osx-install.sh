@@ -110,6 +110,7 @@ install_casks () {
     echo "# CASKS"
     echo "#######################################################"
     cask_me_some atom
+    cask_me_some bitbar
     cask_me_some docker
     cask_me_some dropbox
     cask_me_some firefox
