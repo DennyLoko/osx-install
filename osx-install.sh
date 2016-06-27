@@ -129,6 +129,7 @@ install_casks () {
     cask_me_some toggldesktop
     cask_me_some tunnelblick
     cask_me_some utorrent
+    cask_me_some vagrant
     cask_me_some virtualbox
     cask_me_some vlc
     cask_me_some whatsapp
