@@ -1,13 +1,16 @@
 #!/bin/sh
 set -e
 
-warn () {
-    echo "WARNING: $1" >&2
+ok () {
+    echo '\033[1;32m'"$1"'\033[0m';
 }
 
+warn () {
+    echo '\033[1;33m'"WARNING: $1"'\033[0m' >&2;
+}
 
 die () {
-    echo "FATAL: $1" >&2
+    echo '\033[1;31mERROR: '"ERROR: $1"'\033[0m' >&2;
     exit 2
 }
 
@@ -37,7 +40,7 @@ _update_brew() {
 
     echo "Updating brew to have the latest packages... hang in there..."
     brew update && \
-        echo "homebrew packages updated" || \
+        ok "homebrew packages updated" || \
         die "could not update brew"
 }
 
@@ -46,34 +49,45 @@ brew_me_some () {
     pkg="$1"
     _check_brew_package_installed "$pkg" || \
         (_update_brew && brew install "$pkg") || \
-        die "$pkg could not be installed"
+            _check_brew_package_installed "$pkg" || \
+                die "$pkg could not be installed"
 
-    echo "$pkg installed"
+    ok "$pkg installed"
 }
 
 
 cask_me_some () {
     pkg="$1"
     brew cask list | grep -qxF "$pkg" || \
-        brew cask install "$@" || \
-        die "cask $pkg could not be installed"
-    echo "$@ is already installed."
+        brew cask install "$pkg" || \
+            die "cask $pkg could not be installed"
+
+    ok "$pkg installed"
 }
 
 
-check_brew_is_installed () {
+goget () {
+    pkg="$1"
+    if ! which -s go; then
+        die "Go not found!"
+    else
+        go get -u "$pkg"
+    fi
+
+    ok "$pkg installed"
+}
+
+
+install_brew_if_not_installed () {
     if ! which -s brew; then
-        echo "We rely on the Brew installer for the Mac OS X platform."
-        echo "Please install Brew by following instructions here:"
-        echo "    http://brew.sh/#install"
-        echo ""
-        exit 2
+        warn "Installing brew..."
+        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
 }
 
 
 install_tools () {
-    check_brew_is_installed
+    install_brew_if_not_installed
 
     # Used by brew
     brew_me_some git
@@ -92,15 +106,19 @@ install_tools () {
     echo "# INSTALLING BREW PACKAGES"
     echo "#######################################################"
     brew_me_some gcc
+    brew_me_some git-flow
     brew_me_some gnupg
+    brew_me_some go
     brew_me_some hub
     brew_me_some jq
+    brew_me_some node
     brew_me_some ssh-copy-id
     brew_me_some tree
     brew_me_some unrar
     brew_me_some vim
     brew_me_some watch
     brew_me_some wget
+    brew_me_some xz
 }
 
 
@@ -153,11 +171,21 @@ install_fonts () {
     cask_me_some font-ubuntu-mono-powerline
 }
 
+install_gotools () {
+    echo ""
+    echo "#######################################################"
+    echo "# GO TOOLS"
+    echo "#######################################################"
+    goget golang.org/x/tools/cmd/goimports
+    goget github.com/kardianos/govendor
+}
+
 
 main () {
     install_tools
     install_casks
     install_fonts
+    install_gotools
     curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
 }
 
