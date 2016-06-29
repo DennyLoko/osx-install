@@ -77,6 +77,19 @@ goget () {
     ok "$pkg installed"
 }
 
+npm_me () {
+    pkg="$1"
+    if ! which -s npm; then
+        die "npm not found!"
+    else
+        npm list -g | grep -qF "$pkg" || \
+            npm install -g "$pkg" || \
+                die "npm package $pkg could not be installed"
+    fi
+
+    ok "$pkg installed"
+}
+
 
 install_brew_if_not_installed () {
     if ! which -s brew; then
@@ -180,12 +193,25 @@ install_gotools () {
     goget github.com/kardianos/govendor
 }
 
+install_misc () {
+    echo ""
+    echo "#######################################################"
+    echo "# MISC"
+    echo "#######################################################"
+    npm_me diff-so-fancy
+    git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
+
+    git clone -q https://github.com/DennyLoko/dotatom.git ~/.atom
+    apm install --packages-file ~/.atom/packages.list
+}
+
 
 main () {
     install_tools
     install_casks
     install_fonts
     install_gotools
+    install_misc
     curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
 }
 
