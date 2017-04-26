@@ -180,7 +180,7 @@ install_fonts () {
     cask_me_some font-inconsolata
     cask_me_some font-pt-mono
     cask_me_some font-roboto
-    cask_me_some font-ubuntu-mono-powerline
+    cask_me_some font-ubuntu-mono-derivative-powerline
 }
 
 install_gotools () {
