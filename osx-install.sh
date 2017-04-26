@@ -142,6 +142,7 @@ install_casks () {
     echo "#######################################################"
     cask_me_some atom
     cask_me_some bitbar
+    cask_me_some bittorrent
     cask_me_some docker
     cask_me_some dropbox
     cask_me_some firefox
@@ -160,7 +161,6 @@ install_casks () {
     cask_me_some telegram
     cask_me_some toggldesktop
     cask_me_some tunnelblick
-    cask_me_some bittorrent
     cask_me_some vlc
     cask_me_some whatsapp
 }
