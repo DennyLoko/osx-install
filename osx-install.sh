@@ -143,6 +143,7 @@ install_casks () {
     cask_me_some atom
     cask_me_some bitbar
     cask_me_some bittorrent
+    cask_me_some discord
     cask_me_some docker
     cask_me_some dropbox
     cask_me_some firefox
