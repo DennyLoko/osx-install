@@ -160,7 +160,7 @@ install_casks () {
     cask_me_some telegram
     cask_me_some toggldesktop
     cask_me_some tunnelblick
-    cask_me_some utorrent
+    cask_me_some bittorrent
     cask_me_some vlc
     cask_me_some whatsapp
 }
