@@ -151,6 +151,7 @@ install_casks () {
     cask_me_some google-chrome
     cask_me_some google-chrome-canary
     cask_me_some iterm2
+    cask_me_some keeweb
     cask_me_some mailplane
     cask_me_some messenger
     cask_me_some mysqlworkbench
