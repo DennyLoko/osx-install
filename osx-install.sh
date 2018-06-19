@@ -208,8 +208,9 @@ install_misc () {
     npm_me diff-so-fancy
     git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
 
-    git clone -q https://github.com/DennyLoko/dotatom.git ~/.atom
-    apm install --packages-file ~/.atom/packages.list
+    # Do not install atom packages, since I'm not using it anymore
+    # git clone -q https://github.com/DennyLoko/dotatom.git ~/.atom
+    # apm install --packages-file ~/.atom/packages.list
 }
 
 
