@@ -122,8 +122,11 @@ install_tools () {
     brew_me_some go
     brew_me_some hub
     brew_me_some jq
+    brew_me_some kryptco/tap/kr
     brew_me_some node
+    brew_me_some php
     brew_me_some ssh-copy-id
+    brew_me_some tmux
     brew_me_some tree
     brew_me_some unrar
     brew_me_some vim
@@ -155,6 +158,7 @@ install_casks () {
     cask_me_some iterm2
     cask_me_some keeweb
     cask_me_some keybase
+    cask_me_some minikube
     cask_me_some postman
     cask_me_some skype
     cask_me_some slack
