@@ -138,29 +138,34 @@ install_casks () {
     echo "#######################################################"
     echo "# CASKS"
     echo "#######################################################"
-    cask_me_some atom
+    cask_me_some authy
     cask_me_some bitbar
     cask_me_some bittorrent
+    cask_me_some charles
     cask_me_some discord
     cask_me_some docker
     cask_me_some dropbox
+    cask_me_some expo-xde
     cask_me_some firefox
     cask_me_some flixtools
     cask_me_some flux
     cask_me_some google-chrome
     cask_me_some google-chrome-canary
+    cask_me_some impactor
     cask_me_some iterm2
     cask_me_some keeweb
-    cask_me_some mailplane
-    cask_me_some messenger
-    cask_me_some mysqlworkbench
+    cask_me_some keybase
+    cask_me_some postman
     cask_me_some skype
     cask_me_some slack
     cask_me_some spectacle
     cask_me_some spotify
+    cask_me_some stremio
     cask_me_some telegram
     cask_me_some toggldesktop
     cask_me_some tunnelblick
+    cask_me_some virtualbox
+    cask_me_some visual-studio-code
     cask_me_some vlc
     cask_me_some whatsapp
 }
