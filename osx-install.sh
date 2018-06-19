@@ -110,7 +110,6 @@ install_tools () {
     echo "#######################################################"
     echo "# KEGS"
     echo "#######################################################"
-    brew tap homebrew/science
     brew tap caskroom/versions
 
     echo ""
