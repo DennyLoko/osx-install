@@ -213,6 +213,8 @@ install_misc () {
     # Do not install atom packages, since I'm not using it anymore
     # git clone -q https://github.com/DennyLoko/dotatom.git ~/.atom
     # apm install --packages-file ~/.atom/packages.list
+
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 }
 
 
