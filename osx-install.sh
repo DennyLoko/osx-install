@@ -103,6 +103,10 @@ install_tools () {
     install_brew_if_not_installed
 
     # Used by brew
+    echo ""
+    echo "#######################################################"
+    echo "# DEPENDENCIES"
+    echo "#######################################################"
     brew_me_some git
 
     # Tap some kegs
@@ -111,19 +115,23 @@ install_tools () {
     echo "# KEGS"
     echo "#######################################################"
     brew tap caskroom/versions
+    brew tap Yleisradio/terraforms
 
     echo ""
     echo "#######################################################"
     echo "# INSTALLING BREW PACKAGES"
     echo "#######################################################"
+    brew_me_some chtf
     brew_me_some gcc
+    brew_me_some git-crypt
     brew_me_some git-flow
     brew_me_some gnupg
     brew_me_some go
+    brew_me_some httpie
     brew_me_some hub
     brew_me_some jq
     brew_me_some kryptco/tap/kr
-    brew_me_some node
+    brew_me_some nvm
     brew_me_some php
     brew_me_some reattach-to-user-namespace
     brew_me_some ssh-copy-id
@@ -188,10 +196,12 @@ install_fonts () {
     cask_me_some font-anonymous-pro
     cask_me_some font-hack
     cask_me_some font-inconsolata
+    cask_me_some font-inconsolatalgc-nerd-font
     cask_me_some font-pt-mono
     cask_me_some font-roboto
     cask_me_some font-ubuntu-mono-derivative-powerline
 }
+
 
 install_gotools () {
     echo ""
@@ -202,6 +212,7 @@ install_gotools () {
     goget github.com/kardianos/govendor
 }
 
+
 install_misc () {
     echo ""
     echo "#######################################################"
@@ -210,11 +221,18 @@ install_misc () {
     npm_me diff-so-fancy
     git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
 
+    goget github.com/variadico/noti/cmd/noti
+
     # Do not install atom packages, since I'm not using it anymore
     # git clone -q https://github.com/DennyLoko/dotatom.git ~/.atom
     # apm install --packages-file ~/.atom/packages.list
 
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+#    git clone git@github.com:DennyLoko/dotfiles.git ~/dotfiles
+#    sh ~/dotfiles/install.sh
+
+    curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
 }
 
 
