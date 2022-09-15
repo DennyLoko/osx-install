@@ -72,6 +72,8 @@ _update_brew() {
 brew_me_some () {
     pkg="$1"
 
+    info brew "installing '$pkg'"
+
     _check_brew_package_installed "$pkg" || \
         (_update_brew && brew install "$pkg") || \
             _check_brew_package_installed "$pkg" || \
@@ -83,6 +85,8 @@ brew_me_some () {
 cask_me_some () {
     pkg="$1"
 
+    info brew "installing '$pkg'"
+
     _check_brew_package_installed "$pkg" || \
         (_update_brew && brew install --cask "$pkg") || \
             _check_brew_package_installed "$pkg" || \
@@ -93,6 +97,8 @@ cask_me_some () {
 
 goget () {
     pkg="$1"
+
+    info go "installing '$pkg'"
 
     if ! which -s go; then
         die go "go binary not found"
@@ -106,6 +112,8 @@ goget () {
 
 npm_me () {
     pkg="$1"
+
+    info npm "installing '$pkg'"
 
     if ! which -s npm; then
         die npm "npm binary not found"
@@ -121,6 +129,8 @@ npm_me () {
 git_me () {
     pkg="$1"
     dir="$2"
+
+    info git "installing '$pkg'"
 
     if ! -z "$dir"; then 
         if git clone "$pkg" "$dir"; then
