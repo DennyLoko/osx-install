@@ -135,9 +135,9 @@ git_me () {
 
     info git "installing '$pkg'"
 
-    if ! git clone "$pkg" "$dir"; then
-        die git "failed to clone '$pkg'"
-    fi
+    git clone "$pkg" "$dir" 2>/dev/null || \
+        [ -d "$dir" ] || \
+            die git "failed to clone '$pkg'"
 
     ok git "'$pkg' cloned"
 }
