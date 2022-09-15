@@ -230,7 +230,6 @@ install_casks () {
     cask_me_some stremio
     cask_me_some telegram
     cask_me_some tunnelblick
-    cask_me_some virtualbox
     cask_me_some visual-studio-code
     cask_me_some vlc
 }
