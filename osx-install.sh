@@ -243,11 +243,8 @@ install_fonts () {
     brew tap homebrew/cask-fonts
 
     # The fonts
-    cask_me_some font-anonymous-pro
-    cask_me_some font-hack
-    cask_me_some font-inconsolata
-    cask_me_some font-inconsolatalgc-nerd-font
-    cask_me_some font-pt-mono
+    cask_me_some font-hack-nerd-font
+    cask_me_some font-inconsolata-nerd-font
     cask_me_some font-roboto
     cask_me_some font-ubuntu-mono-derivative-powerline
 }
