@@ -240,7 +240,7 @@ install_fonts () {
     echo "#######################################################"
     echo "# FONTS"
     echo "#######################################################"
-    brew tap caskroom/fonts
+    brew tap homebrew/cask-fonts
 
     # The fonts
     cask_me_some font-anonymous-pro
