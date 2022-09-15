@@ -130,6 +130,7 @@ git_me () {
         fi
     else
         die git "'$dir' already exists"
+    fi
 }
 
 
