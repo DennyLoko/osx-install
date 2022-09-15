@@ -173,6 +173,7 @@ install_tools () {
     # brew_me_some kryptco/tap/kr
     brew_me_some reattach-to-user-namespace
     brew_me_some ssh-copy-id
+    brew_me_some svn
     brew_me_some tfenv
     brew_me_some tmux
     brew_me_some tree
