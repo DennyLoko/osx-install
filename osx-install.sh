@@ -288,7 +288,7 @@ main () {
     install_tools
     install_casks
     install_fonts
-    install_gotools
+    # install_gotools
     install_misc
     curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
 }
