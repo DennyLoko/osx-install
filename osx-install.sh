@@ -188,18 +188,16 @@ install_tools () {
     git_me nodenv https://github.com/nodenv/nodenv.git ~/.nodenv
     git_me nodenv-build https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build
 
-    if [ ! (_check_env_is_set nodenv) ]; then
-        echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.zshrc
+    _check_env_is_set nodenv || \
+        echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.zshrc && \
         echo 'eval "$(nodenv init -)"' >> ~/.zshrc
-    fi
 
     git_me phpenv https://github.com/phpenv/phpenv.git ~/.phpenv
     git_me phpenv-build https://github.com/php-build/php-build ~/.phpenv/plugins/php-build
 
-    if [ ! (_check_env_is_set phpenv) ]; then
-        echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.zshrc
+    _check_env_is_set phpenv || \
+        echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.zshrc && \
         echo 'eval "$(phpenv init -)"' >> ~/.zshrc
-    fi
 
     curl -L https://raw.githubusercontent.com/php-build/php-build/master/install-dependencies.sh | bash
 }
