@@ -155,7 +155,7 @@ install_tools () {
     brew_me_some httpie
     brew_me_some hub
     brew_me_some jq
-    brew_me_some kryptco/tap/kr
+    # brew_me_some kryptco/tap/kr
     brew_me_some reattach-to-user-namespace
     brew_me_some ssh-copy-id
     brew_me_some tfenv
