@@ -135,15 +135,11 @@ git_me () {
 
     info git "installing '$pkg'"
 
-    if [ ! -z "$dir" ]; then 
-        if git clone "$pkg" "$dir"; then
-            ok git "'$pkg' cloned"
-        else
-            die git "failed to clone '$pkg'"
-        fi
-    else
-        die git "'$dir' already exists"
+    if ! git clone "$pkg" "$dir"; then
+        die git "failed to clone '$pkg'"
     fi
+
+    ok git "'$pkg' cloned"
 }
 
 
