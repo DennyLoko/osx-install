@@ -53,6 +53,9 @@ _check_brew_package_installed () {
     brew list --versions $(basename "$1") | fail_if_empty > /dev/null
 }
 
+_check_cask_package_installed () {
+    brew list --cask --versions $(basename "$1") | fail_if_empty > /dev/null
+}
 
 _update_brew() {
     if [ -f ".brew_updated" ]; then
@@ -87,9 +90,9 @@ cask_me_some () {
 
     info brew "installing '$pkg'"
 
-    _check_brew_package_installed "$pkg" || \
+    _check_cask_package_installed "$pkg" || \
         (_update_brew && brew install --cask "$pkg") || \
-            _check_brew_package_installed "$pkg" || \
+            _check_cask_package_installed "$pkg" || \
                 die brew "'$pkg' could not be installed"
 
     ok brew "'$pkg' installed"
