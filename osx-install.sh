@@ -171,6 +171,7 @@ install_tools () {
     brew_me_some hub
     brew_me_some jq
     # brew_me_some kryptco/tap/kr
+    brew_me_some noti
     brew_me_some reattach-to-user-namespace
     brew_me_some ssh-copy-id
     brew_me_some svn
@@ -268,8 +269,6 @@ install_misc () {
     echo "#######################################################"
     npm_me diff-so-fancy
     git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
-
-    goget github.com/variadico/noti/cmd/noti
 
     # Do not install atom packages, since I'm not using it anymore
     # git clone -q https://github.com/DennyLoko/dotatom.git ~/.atom
