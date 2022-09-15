@@ -1,27 +1,51 @@
 #!/bin/sh
 set -e
 
+info () {
+    context="$1"
+    msg="$2"
+
+    echo '\033[1;34m'"[$context] $msg"'\033[0m';
+}
+
 ok () {
-    echo '\033[1;32m'"$1"'\033[0m';
+    context="$1"
+    msg="$2"
+
+    echo '\033[1;32m'"[$context] $msg"'\033[0m';
 }
 
 warn () {
-    echo '\033[1;33m'"WARNING: $1"'\033[0m' >&2;
+    context="$1"
+    msg="$2"
+
+    echo '\033[1;33m'"[$context] WARNING: $msg"'\033[0m' >&2;
 }
 
 die () {
-    echo '\033[1;31mERROR: '"ERROR: $1"'\033[0m' >&2;
+    context="$1"
+    msg="$2"
+
+    echo '\033[1;31m'"[$context] ERROR: $msg"'\033[0m' >&2;
     exit 2
 }
 
-
 fail_if_empty () {
     empty=1
+
     while read line; do
         echo "$line"
         empty=0
     done
+
     test $empty -eq 0
+}
+
+install_brew_if_not_installed () {
+    if ! which -s brew; then
+        warn brew "installing brew..."
+        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    fi
 }
 
 
@@ -38,64 +62,74 @@ _update_brew() {
     trap "{ rm -f .brew_updated; exit 255; }" EXIT
     touch .brew_updated
 
-    echo "Updating brew to have the latest packages... hang in there..."
+    info brew "updating to have the latest formulas..."
     brew update && \
-        ok "homebrew packages updated" || \
-        die "could not update brew"
+        ok brew "packages updated" || \
+        die brew "failed to update"
 }
 
 
 brew_me_some () {
     pkg="$1"
+
     _check_brew_package_installed "$pkg" || \
         (_update_brew && brew install "$pkg") || \
             _check_brew_package_installed "$pkg" || \
-                die "$pkg could not be installed"
+                die brew "'$pkg' could not be installed"
 
-    ok "$pkg installed"
+    ok brew "'$pkg' installed"
 }
-
 
 cask_me_some () {
     pkg="$1"
-    brew cask list | grep -qxF "$pkg" || \
-        brew cask install "$pkg" || \
-            die "cask $pkg could not be installed"
 
-    ok "$pkg installed"
+    _check_brew_package_installed "$pkg" || \
+        (_update_brew && brew install --cask "$pkg") || \
+            _check_brew_package_installed "$pkg" || \
+                die brew "'$pkg' could not be installed"
+
+    ok brew "'$pkg' installed"
 }
-
 
 goget () {
     pkg="$1"
+
     if ! which -s go; then
-        die "Go not found!"
+        die go "go binary not found"
     else
-        go get -u "$pkg"
+        go get -u "$pkg" || \
+            die go "'$pkg' could not be installed"
     fi
 
-    ok "$pkg installed"
+    ok go "'$pkg' installed"
 }
 
 npm_me () {
     pkg="$1"
+
     if ! which -s npm; then
-        die "npm not found!"
+        die npm "npm binary not found"
     else
         npm list -g | grep -qF "$pkg" || \
             npm install -g "$pkg" || \
-                die "npm package $pkg could not be installed"
+                die npm "'$pkg' could not be installed"
     fi
 
-    ok "$pkg installed"
+    ok npm "'$pkg' installed"
 }
 
+git_me () {
+    pkg="$1"
+    dir="$2"
 
-install_brew_if_not_installed () {
-    if ! which -s brew; then
-        warn "Installing brew..."
-        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    fi
+    if ! -z "$dir"; then 
+        if git clone "$pkg" "$dir"; then
+            ok git "'$pkg' cloned"
+        else
+            die git "failed to clone '$pkg'"
+        fi
+    else
+        die git "'$dir' already exists"
 }
 
 
@@ -109,32 +143,21 @@ install_tools () {
     echo "#######################################################"
     brew_me_some git
 
-    # Tap some kegs
-    echo ""
-    echo "#######################################################"
-    echo "# KEGS"
-    echo "#######################################################"
-    brew tap caskroom/versions
-    brew tap Yleisradio/terraforms
-
     echo ""
     echo "#######################################################"
     echo "# INSTALLING BREW PACKAGES"
     echo "#######################################################"
-    brew_me_some chtf
     brew_me_some gcc
     brew_me_some git-crypt
-    brew_me_some git-flow
     brew_me_some gnupg
     brew_me_some go
     brew_me_some httpie
     brew_me_some hub
     brew_me_some jq
     brew_me_some kryptco/tap/kr
-    brew_me_some nvm
-    brew_me_some php
     brew_me_some reattach-to-user-namespace
     brew_me_some ssh-copy-id
+    brew_me_some tfenv
     brew_me_some tmux
     brew_me_some tree
     brew_me_some unrar
@@ -142,6 +165,24 @@ install_tools () {
     brew_me_some watch
     brew_me_some wget
     brew_me_some xz
+    brew_me_some zsh
+
+    echo ""
+    echo "#######################################################"
+    echo "# INSTALLING GIT PACKAGES"
+    echo "#######################################################"
+    info git "installing 'nodenv'"
+    git_me https://github.com/nodenv/nodenv.git ~/.nodenv
+    git_me https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build
+    echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.zshrc
+    echo 'eval "$(nodenv init -)"' >> ~/.zshrc
+
+    info git "installing 'phpenv'"
+    git_me https://github.com/phpenv/phpenv.git ~/.phpenv
+    git_me https://github.com/php-build/php-build ~/.phpenv/plugins/php-build
+    echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.zshrc
+    echo 'eval "$(phpenv init -)"' >> ~/.zshrc
+    curl -L https://raw.githubusercontent.com/php-build/php-build/master/install-dependencies.sh | bash
 }
 
 
@@ -150,29 +191,21 @@ install_casks () {
     echo "#######################################################"
     echo "# CASKS"
     echo "#######################################################"
-    cask_me_some authy
     cask_me_some bitbar
     cask_me_some bittorrent
     cask_me_some charles
     cask_me_some discord
     cask_me_some docker
-    cask_me_some dropbox
     cask_me_some expo-xde
     cask_me_some firefox
-    cask_me_some flixtools
     cask_me_some flux
     cask_me_some google-chrome
     cask_me_some google-chrome-canary
     cask_me_some google-cloud-sdk
-    cask_me_some impactor
     cask_me_some iterm2
-    cask_me_some keeweb
     cask_me_some keybase
-    cask_me_some minikube
     cask_me_some postman
-    cask_me_some skype
     cask_me_some slack
-    cask_me_some spectacle
     cask_me_some spotify
     cask_me_some stremio
     cask_me_some telegram
@@ -181,7 +214,6 @@ install_casks () {
     cask_me_some virtualbox
     cask_me_some visual-studio-code
     cask_me_some vlc
-    cask_me_some whatsapp
 }
 
 
