@@ -135,7 +135,7 @@ git_me () {
 
     info git "installing '$pkg'"
 
-    if ! -z "$dir"; then 
+    if [ ! -z "$dir" ]; then 
         if git clone "$pkg" "$dir"; then
             ok git "'$pkg' cloned"
         else
