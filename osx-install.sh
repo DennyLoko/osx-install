@@ -171,7 +171,6 @@ install_tools () {
     brew_me_some tfenv
     brew_me_some tmux
     brew_me_some tree
-    brew_me_some unrar
     brew_me_some vim
     brew_me_some watch
     brew_me_some wget
@@ -216,6 +215,7 @@ install_casks () {
     cask_me_some iterm2
     cask_me_some keybase
     cask_me_some postman
+    cask_me_some rar
     cask_me_some slack
     cask_me_some spotify
     cask_me_some stremio
