@@ -162,6 +162,7 @@ install_tools () {
     echo "#######################################################"
     echo "# INSTALLING BREW PACKAGES"
     echo "#######################################################"
+    brew_me_some aria2
     brew_me_some gcc
     brew_me_some git-crypt
     brew_me_some gnupg
@@ -211,7 +212,6 @@ install_casks () {
     echo "# CASKS"
     echo "#######################################################"
     cask_me_some bitbar
-    cask_me_some bittorrent
     cask_me_some charles
     cask_me_some discord
     cask_me_some docker
