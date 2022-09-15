@@ -110,7 +110,7 @@ goget () {
     if ! which -s go; then
         die go "go binary not found"
     else
-        go get -u "$pkg" || \
+        go install "$pkg@latest" || \
             die go "'$pkg' could not be installed"
     fi
 
