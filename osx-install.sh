@@ -57,6 +57,10 @@ _check_cask_package_installed () {
     brew list --cask --versions $(basename "$1") | fail_if_empty > /dev/null
 }
 
+_check_env_is_set () {
+    cat ~/.zshrc | grep -i "$1" | fail_if_empty > /dev/null
+}
+
 _update_brew() {
     if [ -f ".brew_updated" ]; then
         return  # bail out -- already done
@@ -131,15 +135,16 @@ npm_me () {
 
 git_me () {
     pkg="$1"
-    dir="$2"
+    repo="$2"
+    dir="$3"
 
     info git "installing '$pkg'"
 
-    git clone "$pkg" "$dir" 2>/dev/null || \
+    git clone "$repo" "$dir" 2>/dev/null || \
         [ -d "$dir" ] || \
             die git "failed to clone '$pkg'"
 
-    ok git "'$pkg' cloned"
+    ok git "'$pkg' installed"
 }
 
 
@@ -180,17 +185,22 @@ install_tools () {
     echo "#######################################################"
     echo "# INSTALLING GIT PACKAGES"
     echo "#######################################################"
-    info git "installing 'nodenv'"
-    git_me https://github.com/nodenv/nodenv.git ~/.nodenv
-    git_me https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build
-    echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.zshrc
-    echo 'eval "$(nodenv init -)"' >> ~/.zshrc
+    git_me nodenv https://github.com/nodenv/nodenv.git ~/.nodenv
+    git_me nodenv https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build
 
-    info git "installing 'phpenv'"
-    git_me https://github.com/phpenv/phpenv.git ~/.phpenv
-    git_me https://github.com/php-build/php-build ~/.phpenv/plugins/php-build
-    echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.zshrc
-    echo 'eval "$(phpenv init -)"' >> ~/.zshrc
+    if [ ! _check_env_is_set nodenv ]; then
+        echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.zshrc
+        echo 'eval "$(nodenv init -)"' >> ~/.zshrc
+    fi
+
+    git_me phpenv https://github.com/phpenv/phpenv.git ~/.phpenv
+    git_me phpenv https://github.com/php-build/php-build ~/.phpenv/plugins/php-build
+
+    if [ ! _check_env_is_set phpenv ]; then
+        echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.zshrc
+        echo 'eval "$(phpenv init -)"' >> ~/.zshrc
+    fi
+
     curl -L https://raw.githubusercontent.com/php-build/php-build/master/install-dependencies.sh | bash
 }
 
