@@ -246,7 +246,7 @@ install_casks () {
     echo "#######################################################"
     echo "# Mac App Store"
     echo "#######################################################"
-    mas install 1176895641
+    mas install 1176895641 # Spark
 }
 
 
@@ -288,7 +288,10 @@ install_misc () {
     # apm install --packages-file ~/.atom/packages.list
 
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    echo "source $HOME/.zshenv"
+    echo "source $HOME/.zshenv" >> ~/.zshrc
+
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+    perl -i -pe's/ZSH_THEME="(.*)"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ~/.zshrc
 
 #    git clone git@github.com:DennyLoko/dotfiles.git ~/dotfiles
 #    sh ~/dotfiles/install.sh
