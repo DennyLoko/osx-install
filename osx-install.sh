@@ -196,6 +196,11 @@ install_tools () {
         echo 'eval "$(nodenv init -)"' >> ~/.zshrc
     )
 
+    export PATH="$HOME/.nodenv/bin:$PATH"
+    eval "$(nodenv init -)"
+    nodenv install 16.17.0
+    nodenv global 16.17.0
+
     git_me phpenv https://github.com/phpenv/phpenv.git ~/.phpenv
     git_me phpenv-build https://github.com/php-build/php-build ~/.phpenv/plugins/php-build
 
