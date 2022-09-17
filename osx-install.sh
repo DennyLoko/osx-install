@@ -199,7 +199,7 @@ install_tools () {
 
     export PATH="$HOME/.nodenv/bin:$PATH"
     eval "$(nodenv init -)"
-    nodenv install 16.17.0
+    nodenv install -s 16.17.0
     nodenv global 16.17.0
 
     git_me phpenv https://github.com/phpenv/phpenv.git ~/.phpenv
