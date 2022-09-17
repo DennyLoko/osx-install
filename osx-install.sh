@@ -58,7 +58,7 @@ _check_cask_package_installed () {
 }
 
 _check_env_is_set () {
-    cat ~/.zshrc | grep -i "$1" | fail_if_empty > /dev/null
+    cat ~/.zshenv | grep -i "$1" | fail_if_empty > /dev/null
 }
 
 _update_brew() {
@@ -192,8 +192,8 @@ install_tools () {
     git_me nodenv-build https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build
 
     _check_env_is_set nodenv || ( \
-        echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.zshrc && \
-        echo 'eval "$(nodenv init -)"' >> ~/.zshrc
+        echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.zshenv && \
+        echo 'eval "$(nodenv init -)"' >> ~/.zshenv
     )
 
     export PATH="$HOME/.nodenv/bin:$PATH"
@@ -205,8 +205,8 @@ install_tools () {
     git_me phpenv-build https://github.com/php-build/php-build ~/.phpenv/plugins/php-build
 
     _check_env_is_set phpenv || ( \
-        echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.zshrc && \
-        echo 'eval "$(phpenv init -)"' >> ~/.zshrc
+        echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.zshenv && \
+        echo 'eval "$(phpenv init -)"' >> ~/.zshenv
     )
 
     curl -L https://raw.githubusercontent.com/php-build/php-build/master/install-dependencies.sh | bash
@@ -280,6 +280,7 @@ install_misc () {
     # apm install --packages-file ~/.atom/packages.list
 
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    echo "source $HOME/.zshenv"
 
 #    git clone git@github.com:DennyLoko/dotfiles.git ~/dotfiles
 #    sh ~/dotfiles/install.sh
