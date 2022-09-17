@@ -249,6 +249,7 @@ install_casks () {
     echo "# Mac App Store"
     echo "#######################################################"
     mas install 1176895641 # Spark
+    mas install 497799835 # Xcode
 }
 
 
