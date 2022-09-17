@@ -171,6 +171,7 @@ install_tools () {
     brew_me_some hub
     brew_me_some jq
     # brew_me_some kryptco/tap/kr
+    brew_me_some mas
     brew_me_some noti
     brew_me_some reattach-to-user-namespace
     brew_me_some ssh-copy-id
@@ -240,6 +241,12 @@ install_casks () {
     cask_me_some tunnelblick
     cask_me_some visual-studio-code
     cask_me_some vlc
+
+    echo ""
+    echo "#######################################################"
+    echo "# Mac App Store"
+    echo "#######################################################"
+    mas install 1176895641
 }
 
 
