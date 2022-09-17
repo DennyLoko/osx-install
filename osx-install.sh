@@ -226,12 +226,13 @@ install_casks () {
     cask_me_some firefox
     cask_me_some flux
     # cask_me_some google-chrome
-    cask_me_some homebrew/cask-versions/google-chrome-canary
     cask_me_some google-cloud-sdk
+    cask_me_some homebrew/cask-versions/google-chrome-canary
     cask_me_some iterm2
     cask_me_some keybase
     cask_me_some postman
     cask_me_some rar
+    cask_me_some raycast
     cask_me_some slack
     cask_me_some spotify
     cask_me_some stremio
