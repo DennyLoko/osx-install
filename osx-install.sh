@@ -162,6 +162,7 @@ install_tools () {
     echo "#######################################################"
     echo "# INSTALLING BREW PACKAGES"
     echo "#######################################################"
+    brew_me_some 1password-cli
     brew_me_some aria2
     brew_me_some gcc
     brew_me_some git-crypt
@@ -219,6 +220,7 @@ install_casks () {
     echo "#######################################################"
     echo "# CASKS"
     echo "#######################################################"
+    cask_me_some 1password
     cask_me_some bitbar
     cask_me_some charles
     cask_me_some discord
