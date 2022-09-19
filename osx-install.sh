@@ -233,6 +233,7 @@ install_casks () {
     cask_me_some homebrew/cask-versions/google-chrome-canary
     cask_me_some iterm2
     cask_me_some keybase
+    cask_me_some notion
     cask_me_some postman
     cask_me_some rar
     cask_me_some raycast
