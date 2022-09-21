@@ -192,26 +192,31 @@ install_tools () {
     echo "#######################################################"
     git_me nodenv https://github.com/nodenv/nodenv.git ~/.nodenv
     git_me nodenv-build https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build
-
     _check_env_is_set nodenv || ( \
         echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.zshenv && \
         echo 'eval "$(nodenv init -)"' >> ~/.zshenv
     )
 
-    export PATH="$HOME/.nodenv/bin:$PATH"
-    eval "$(nodenv init -)"
-    nodenv install -s 16.17.0
-    nodenv global 16.17.0
-
     git_me phpenv https://github.com/phpenv/phpenv.git ~/.phpenv
     git_me phpenv-build https://github.com/php-build/php-build ~/.phpenv/plugins/php-build
-
     _check_env_is_set phpenv || ( \
         echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.zshenv && \
         echo 'eval "$(phpenv init -)"' >> ~/.zshenv
     )
 
     curl -L https://raw.githubusercontent.com/php-build/php-build/master/install-dependencies.sh | bash
+
+    git_me pyenv https://github.com/pyenv/pyenv.git ~/.pyenv
+    _check_env_is_set pyenv || ( \
+        echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshenv && \
+        echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshenv && \
+        echo 'eval "$(pyenv init -)"' >> ~/.zshenv
+    )
+
+    source ~/.zshenv
+
+    nodenv install -s 16.17.0
+    nodenv global 16.17.0
 }
 
 
