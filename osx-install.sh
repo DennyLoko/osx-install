@@ -205,7 +205,7 @@ install_tools () {
         echo 'eval "$(phpenv init -)"' >> ~/.zshenv
     )
 
-    curl -L https://raw.githubusercontent.com/php-build/php-build/master/install-dependencies.sh | bash
+    # curl -L https://raw.githubusercontent.com/php-build/php-build/master/install-dependencies.sh | bash
 
     git_me pyenv https://github.com/pyenv/pyenv.git ~/.pyenv
     git_me pyenv https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
