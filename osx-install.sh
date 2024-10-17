@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -e
 
 info () {
@@ -162,12 +162,11 @@ install_tools () {
     echo "#######################################################"
     echo "# INSTALLING BREW PACKAGES"
     echo "#######################################################"
-    brew_me_some 1password-cli
     brew_me_some aria2
     brew_me_some gcc
     brew_me_some git-crypt
     brew_me_some gnupg
-    brew_me_some go
+    # brew_me_some go
     brew_me_some httpie
     brew_me_some hub
     brew_me_some jq
@@ -176,8 +175,8 @@ install_tools () {
     brew_me_some noti
     brew_me_some reattach-to-user-namespace
     brew_me_some ssh-copy-id
-    brew_me_some svn
-    brew_me_some tfenv
+    # brew_me_some svn
+    # brew_me_some tfenv
     brew_me_some tmux
     brew_me_some tree
     brew_me_some vim
@@ -193,30 +192,59 @@ install_tools () {
     git_me nodenv https://github.com/nodenv/nodenv.git ~/.nodenv
     git_me nodenv-build https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build
     _check_env_is_set nodenv || ( \
-        echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.zshenv && \
+        echo 'export NODENV_ROOT="$HOME/.nodenv"' >> ~/.zshenv && \
+        echo 'command -v nodenv >/dev/null || export PATH="$NODENV_ROOT/bin:$PATH"' >> ~/.zshenv && \
         echo 'eval "$(nodenv init -)"' >> ~/.zshenv
     )
 
     git_me phpenv https://github.com/phpenv/phpenv.git ~/.phpenv
     git_me phpenv-build https://github.com/php-build/php-build ~/.phpenv/plugins/php-build
     _check_env_is_set phpenv || ( \
-        echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.zshenv && \
+        echo 'export PHPENV_ROOT="$HOME/.phpenv"' >> ~/.zshenv && \
+        echo 'command -v phpenv >/dev/null || export PATH="$PHPENV_ROOT/bin:$PATH"' >> ~/.zshenv && \
         echo 'eval "$(phpenv init -)"' >> ~/.zshenv
     )
 
     curl -L https://raw.githubusercontent.com/php-build/php-build/master/install-dependencies.sh | bash
 
     git_me pyenv https://github.com/pyenv/pyenv.git ~/.pyenv
+    git_me pyenv https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
     _check_env_is_set pyenv || ( \
         echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshenv && \
         echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshenv && \
-        echo 'eval "$(pyenv init -)"' >> ~/.zshenv
+        echo 'eval "$(pyenv init -)"' >> ~/.zshenv \
+        echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshenv
+    )
+
+    git_me goenv https://github.com/go-nv/goenv.git ~/.goenv
+    _check_env_is_set goenv || ( \
+        echo 'export GOENV_ROOT="$HOME/.goenv"' >> ~/.zshenv && \
+        echo 'command -v goenv >/dev/null || export PATH="$GOENV_ROOT/bin:$PATH"' >> ~/.zshenv && \
+        echo 'eval "$(goenv init -)"' >> ~/.zshenv
+    )
+
+    git_me rbenv https://github.com/rbenv/rbenv.git ~/.rbenv
+    git_me rbenv https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+    _check_env_is_set rbenv || ( \
+        echo 'export RBENV_ROOT="$HOME/.rbenv"' >> ~/.zshenv && \
+        echo 'command -v rbenv >/dev/null || export PATH="$RBENV_ROOT/bin:$PATH"' >> ~/.zshenv && \
+        echo 'eval "$(rbenv init - --no-rehash zsh)"' >> ~/.zshenv
+    )
+
+    git_me tfenv https://github.com/tfutils/tfenv.git ~/.tfenv
+    _check_env_is_set tfenv || ( \
+        echo 'export TFENV_ROOT="$HOME/.tfenv"' >> ~/.zshenv && \
+        echo 'command -v tfenv >/dev/null || export PATH="$TFENV_ROOT/bin:$PATH"' >> ~/.zshenv && \
+        echo 'eval "$(tfenv init -)"' >> ~/.zshenv
     )
 
     source ~/.zshenv
 
-    nodenv install -s 16.17.0
-    nodenv global 16.17.0
+    nodenv install -s 20.18.0
+    nodenv global 20.18.0
+
+    goenv install -s 1.23.1
+    goenv global 1.23.1
 }
 
 
@@ -226,19 +254,25 @@ install_casks () {
     echo "# CASKS"
     echo "#######################################################"
     cask_me_some 1password
-    cask_me_some bitbar
+    cask_me_some 1password-cli
+    # cask_me_some bitbar
     cask_me_some charles
+    cask_me_some cloudflare-warp
     cask_me_some discord
     cask_me_some docker
     cask_me_some expo-xde
     cask_me_some firefox
-    cask_me_some flux
-    # cask_me_some google-chrome
+    # cask_me_some flux
+    cask_me_some goland
+    cask_me_some google-chrome
     cask_me_some google-cloud-sdk
     cask_me_some homebrew/cask-versions/google-chrome-canary
+    cask_me_some intellij-idea
     cask_me_some iterm2
     cask_me_some keybase
+    cask_me_some mysqlworkbench
     cask_me_some notion
+    cask_me_some phpstorm
     cask_me_some postman
     cask_me_some rar
     cask_me_some raycast
@@ -249,10 +283,12 @@ install_casks () {
     cask_me_some tunnelblick
     cask_me_some visual-studio-code
     cask_me_some vlc
+    cask_me_some webstorm
+    cask_me_some zoom
 
     echo ""
     echo "#######################################################"
-    echo "# Mac App Store"
+    echo "# MAC APP STORE"
     echo "#######################################################"
     mas install 1176895641 # Spark
     mas install 497799835 # Xcode
@@ -269,6 +305,7 @@ install_fonts () {
     # The fonts
     cask_me_some font-hack-nerd-font
     cask_me_some font-inconsolata-nerd-font
+    cask_me_some font-jetbrains-mono-nerd-font
     cask_me_some font-roboto
     cask_me_some font-ubuntu-mono-derivative-powerline
 }
@@ -292,20 +329,44 @@ install_misc () {
     npm_me diff-so-fancy
     git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
 
-    # Do not install atom packages, since I'm not using it anymore
-    # git clone -q https://github.com/DennyLoko/dotatom.git ~/.atom
-    # apm install --packages-file ~/.atom/packages.list
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+        echo "source $HOME/.zshenv" >> ~/.zshrc
+    fi
 
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    echo "source $HOME/.zshenv" >> ~/.zshrc
+    if [ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ]; then
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+        perl -i -pe's/ZSH_THEME="(.*)"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ~/.zshrc
+    fi
 
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-    perl -i -pe's/ZSH_THEME="(.*)"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ~/.zshrc
+    zsh_autosuggestions=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    if [ !-d "$zsh_autosuggestions" ]; then
+        git_me zsh-autosuggestions https://github.com/zsh-users/zsh-autosuggestions.git "$zsh_autosuggestions"
+    fi
+
+    zsh_histdb=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-histdb
+    if [ !-d "$zsh_histdb" ]; then
+        git_me zsh-histdb https://github.com/larkery/zsh-histdb.git "$zsh_histdb"
+    fi
+
+    zsh_syntax_highlighting=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    if [ !-d "$zsh_syntax_highlighting" ]; then
+        git_me zsh-syntax-highlighting https://github.com/zsh-users/zsh-syntax-highlighting.git "$zsh_syntax_highlighting"
+    fi
 
 #    git clone git@github.com:DennyLoko/dotfiles.git ~/dotfiles
 #    sh ~/dotfiles/install.sh
 
-    curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
+    if [ ! -f "$HOME/.iterm2/it2api" ]; then
+        info iterm2 "installing iTerm2 utilities"
+        curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash > /dev/null
+    fi
+
+    if ! which -s aws; then
+        curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "$HOME/Downloads/AWSCLIV2.pkg"
+        sudo installer -pkg "$HOME/Downloads/AWSCLIV2.pkg" -target /
+        rm -fr "$HOME/Downloads/AWSCLIV2.pkg"
+    fi
 }
 
 
@@ -315,7 +376,7 @@ main () {
     install_fonts
     # install_gotools
     install_misc
-    curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
+    # curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
 }
 
 main
