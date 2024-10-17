@@ -266,7 +266,7 @@ install_casks () {
     cask_me_some goland
     cask_me_some google-chrome
     cask_me_some google-cloud-sdk
-    cask_me_some homebrew/cask-versions/google-chrome-canary
+    # cask_me_some homebrew/cask-versions/google-chrome-canary
     cask_me_some intellij-idea
     cask_me_some iterm2
     cask_me_some keybase
