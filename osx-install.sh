@@ -212,7 +212,7 @@ install_tools () {
     _check_env_is_set pyenv || ( \
         echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshenv && \
         echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshenv && \
-        echo 'eval "$(pyenv init -)"' >> ~/.zshenv \
+        echo 'eval "$(pyenv init -)"' >> ~/.zshenv && \
         echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshenv
     )
 
