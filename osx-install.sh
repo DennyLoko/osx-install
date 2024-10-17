@@ -340,17 +340,17 @@ install_misc () {
     fi
 
     zsh_autosuggestions=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-    if [ !-d "$zsh_autosuggestions" ]; then
+    if [ ! -d "$zsh_autosuggestions" ]; then
         git_me zsh-autosuggestions https://github.com/zsh-users/zsh-autosuggestions.git "$zsh_autosuggestions"
     fi
 
     zsh_histdb=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-histdb
-    if [ !-d "$zsh_histdb" ]; then
+    if [ ! -d "$zsh_histdb" ]; then
         git_me zsh-histdb https://github.com/larkery/zsh-histdb.git "$zsh_histdb"
     fi
 
     zsh_syntax_highlighting=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-    if [ !-d "$zsh_syntax_highlighting" ]; then
+    if [ ! -d "$zsh_syntax_highlighting" ]; then
         git_me zsh-syntax-highlighting https://github.com/zsh-users/zsh-syntax-highlighting.git "$zsh_syntax_highlighting"
     fi
 
