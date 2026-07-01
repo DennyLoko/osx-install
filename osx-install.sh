@@ -276,12 +276,13 @@ install_casks () {
     cask_me_some claude-code
     cask_me_some cloudflare-warp
     cask_me_some discord
-    cask_me_some docker
+    cask_me_some docker-desktop
     cask_me_some firefox
     cask_me_some google-chrome
     cask_me_some google-cloud-sdk
     cask_me_some hoppscotch
     cask_me_some insomnia
+    cask_me_some microsoft-teams
     cask_me_some notion
     cask_me_some postman
     cask_me_some raycast
