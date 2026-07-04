@@ -350,6 +350,69 @@ install_gotools () {
 }
 
 
+setup_git () {
+    echo ""
+    echo "#######################################################"
+    echo "# GIT IDENTITIES & COMMIT SIGNING"
+    echo "#######################################################"
+
+    info git "configuring identities and commit signing"
+
+    # As chaves ficam no 1Password (agente SSH), então os mesmos públicos
+    # valem em qualquer máquina logada na conta.
+    [ -f "$HOME/.gitconfig-personal" ] || cat > "$HOME/.gitconfig-personal" <<'EOF'
+[user]
+	name = Danniel Magno
+	email = dennyloko@gmail.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKv/tvAXsYB2cNNRiXGvA80aQrLpegV5RzGBPaAHHjs
+EOF
+
+    [ -f "$HOME/.gitconfig-work" ] || cat > "$HOME/.gitconfig-work" <<'EOF'
+[user]
+	name = Danniel Magno
+	email = danniel.magno@marisa.care
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGApn6A/F5Xvbjm8CY1fZy65BkQEfdNyq3JwfWEhQBet
+EOF
+
+    mkdir -p "$HOME/.config/git"
+    [ -f "$HOME/.config/git/allowed_signers" ] || cat > "$HOME/.config/git/allowed_signers" <<'EOF'
+dennyloko@gmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKv/tvAXsYB2cNNRiXGvA80aQrLpegV5RzGBPaAHHjs
+danniel.magno@marisa.care ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGApn6A/F5Xvbjm8CY1fZy65BkQEfdNyq3JwfWEhQBet
+EOF
+
+    [ -f "$HOME/.gitconfig" ] || cat > "$HOME/.gitconfig" <<'EOF'
+[core]
+	pager = diff-so-fancy | less --tabs=4 -RFX
+
+# Identidade padrão: trabalho. Tudo neste computador usa a identidade
+# do trabalho, exceto os repos pessoais (override abaixo).
+[include]
+	path = ~/.gitconfig-work
+
+# Repos pessoais (GitHub DennyLoko)
+[includeIf "gitdir:~/Work/projects/DennyLoko/"]
+	path = ~/.gitconfig-personal
+
+# Assinatura de commits via chave SSH do 1Password.
+# A chave usada (user.signingkey) vem do arquivo de identidade incluído acima.
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+	allowedSignersFile = ~/.config/git/allowed_signers
+
+[commit]
+	gpgsign = true
+
+[tag]
+	gpgsign = true
+EOF
+
+    ok git "identities and commit signing configured"
+}
+
+
 install_misc () {
     echo ""
     echo "#######################################################"
@@ -404,6 +467,7 @@ main () {
     install_casks
     install_fonts
     # install_gotools
+    setup_git
     install_misc
     # curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
 }
