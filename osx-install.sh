@@ -372,6 +372,11 @@ setup_zsh () {
     grep -qF 'starship init zsh' ~/.zshrc || \
         echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 
+    # Sessão do 1Password CLI a cada shell novo. Requer uma conta
+    # configurada no CLI (op account add ou integração com o app).
+    grep -qF 'op signin' ~/.zshrc || \
+        echo 'eval $(op signin)' >> ~/.zshrc
+
     ok zsh "oh-my-zsh configured"
 }
 

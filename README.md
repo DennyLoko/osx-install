@@ -56,4 +56,5 @@ Ajustes de `defaults` do macOS:
 ## Passos manuais pós-instalação
 
 1. Entrar no 1Password e habilitar o **SSH agent** (Settings → Developer) — a autenticação SSH depende dele.
-2. Abrir um terminal novo (ou `source ~/.zshrc`) para o shell recém-configurado valer.
+2. Configurar uma conta no 1Password CLI — sem isso o `op signin` do `~/.zshrc` falha com `no accounts configured` a cada shell novo. Ou habilita a integração com o app (Settings → Developer → **Integrate with 1Password CLI**, e no macOS Sequoia+ o terminal precisa de permissão para acessar dados de outros apps), ou adiciona manualmente com `op account add`.
+3. Abrir um terminal novo (ou `source ~/.zshrc`) para o shell recém-configurado valer.
