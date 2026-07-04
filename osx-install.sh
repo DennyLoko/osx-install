@@ -287,7 +287,6 @@ install_casks () {
     cask_me_some 1password-cli
     cask_me_some charles
     cask_me_some claude
-    cask_me_some claude-code
     cask_me_some cloudflare-warp
     cask_me_some discord
     cask_me_some docker-desktop
@@ -474,6 +473,13 @@ install_misc () {
     #     info iterm2 "installing iTerm2 utilities"
     #     curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash > /dev/null
     # fi
+
+    if ! which -s claude; then
+        info claude "installing claude code..."
+        curl -fsSL https://claude.ai/install.sh | bash || \
+            die claude "claude code could not be installed"
+        ok claude "claude code installed"
+    fi
 
     if ! which -s aws; then
         curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "$HOME/Downloads/AWSCLIV2.pkg"
