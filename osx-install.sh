@@ -195,13 +195,6 @@ install_tools () {
     brew_me_some xz
     brew_me_some zsh
 
-    # libpq is keg-only, so psql & friends aren't linked by brew
-    _check_env_is_set libpq || \
-        echo 'export PATH="/opt/homebrew/opt/libpq/bin:$PATH"' >> ~/.zshenv
-
-    _check_env_is_set direnv || \
-        echo 'eval "$(direnv hook zsh)"' >> ~/.zshenv
-
     echo ""
     echo "#######################################################"
     echo "# INSTALLING GIT PACKAGES"
@@ -350,6 +343,39 @@ install_gotools () {
 }
 
 
+setup_zsh () {
+    echo ""
+    echo "#######################################################"
+    echo "# OH-MY-ZSH"
+    echo "#######################################################"
+
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+        info zsh "installing oh-my-zsh..."
+        RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended || \
+            die zsh "oh-my-zsh could not be installed"
+    fi
+
+    # O prompt é o starship, então o tema do oh-my-zsh fica desativado
+    perl -i -pe 's/^ZSH_THEME=.*/ZSH_THEME=""/' ~/.zshrc
+    perl -i -pe 's/^plugins=\(git\)$/plugins=(git aws)/' ~/.zshrc
+
+    grep -qF '.local/bin' ~/.zshrc || \
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+
+    # libpq is keg-only, so psql & friends aren't linked by brew
+    grep -qF 'opt/libpq/bin' ~/.zshrc || \
+        echo 'export PATH="/opt/homebrew/opt/libpq/bin:$PATH"' >> ~/.zshrc
+
+    grep -qF 'direnv hook zsh' ~/.zshrc || \
+        echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc
+
+    grep -qF 'starship init zsh' ~/.zshrc || \
+        echo 'eval "$(starship init zsh)"' >> ~/.zshrc
+
+    ok zsh "oh-my-zsh configured"
+}
+
+
 setup_git () {
     echo ""
     echo "#######################################################"
@@ -421,11 +447,6 @@ install_misc () {
     npm_me diff-so-fancy
     git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
 
-    # if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    #     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    #     echo "source $HOME/.zshenv" >> ~/.zshrc
-    # fi
-
     # if [ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ]; then
     #     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
     #     perl -i -pe's/ZSH_THEME="(.*)"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ~/.zshrc
@@ -467,6 +488,7 @@ main () {
     install_casks
     install_fonts
     # install_gotools
+    setup_zsh
     setup_git
     install_misc
     # curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
