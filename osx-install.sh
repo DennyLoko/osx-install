@@ -168,15 +168,22 @@ install_tools () {
     # brew_me_some tfenv
     # brew_me_some git-crypt
     brew_me_some aria2
+    brew_me_some direnv
     brew_me_some gcc
+    brew_me_some gh
     brew_me_some gnupg
     brew_me_some httpie
     brew_me_some hub
     brew_me_some jq
+    brew_me_some libpq
+    brew_me_some libyaml
     brew_me_some mas
     brew_me_some noti
     brew_me_some opencode
+    brew_me_some openssl
+    brew_me_some readline
     brew_me_some reattach-to-user-namespace
+    brew_me_some redis
     brew_me_some ssh-copy-id
     brew_me_some starship
     brew_me_some tmux
@@ -184,8 +191,16 @@ install_tools () {
     brew_me_some vim
     brew_me_some watch
     brew_me_some wget
+    brew_me_some uv
     brew_me_some xz
     brew_me_some zsh
+
+    # libpq is keg-only, so psql & friends aren't linked by brew
+    _check_env_is_set libpq || \
+        echo 'export PATH="/opt/homebrew/opt/libpq/bin:$PATH"' >> ~/.zshenv
+
+    _check_env_is_set direnv || \
+        echo 'eval "$(direnv hook zsh)"' >> ~/.zshenv
 
     echo ""
     echo "#######################################################"
@@ -247,6 +262,12 @@ install_tools () {
 
     goenv install -s 1.23.1
     goenv global 1.23.1
+
+    pyenv install -s 3.13.14
+    pyenv global 3.13.14
+
+    rbenv install -s 3.4.10
+    rbenv global 3.4.10
 }
 
 
