@@ -297,6 +297,7 @@ install_casks () {
     cask_me_some insomnia
     cask_me_some microsoft-teams
     cask_me_some notion
+    cask_me_some ollama-app
     cask_me_some postman
     cask_me_some raycast
     cask_me_some spotify
