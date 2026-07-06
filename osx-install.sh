@@ -372,10 +372,10 @@ setup_zsh () {
     grep -qF 'starship init zsh' ~/.zshrc || \
         echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 
-    # Sessão do 1Password CLI a cada shell novo. Requer uma conta
-    # configurada no CLI (op account add ou integração com o app).
-    grep -qF 'op signin' ~/.zshrc || \
-        echo 'eval $(op signin)' >> ~/.zshrc
+    # Com a integração do app com o CLI habilitada, o op autentica sob
+    # demanda — op signin em cada shell novo só gera prompt de autorização
+    # a cada terminal aberto. Remove a linha de setups antigos.
+    perl -i -ne 'print unless /eval \$\(op signin\)/' ~/.zshrc
 
     ok zsh "oh-my-zsh configured"
 }
