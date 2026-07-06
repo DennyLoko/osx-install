@@ -169,6 +169,7 @@ install_tools () {
     # brew_me_some git-crypt
     brew_me_some aria2
     brew_me_some direnv
+    brew_me_some ffmpeg
     brew_me_some gcc
     brew_me_some gh
     brew_me_some gnupg
@@ -295,6 +296,7 @@ install_casks () {
     cask_me_some google-chrome
     cask_me_some hoppscotch
     cask_me_some insomnia
+    cask_me_some linear
     cask_me_some microsoft-teams
     cask_me_some notion
     cask_me_some ollama-app
@@ -303,6 +305,7 @@ install_casks () {
     cask_me_some spotify
     cask_me_some stremio
     cask_me_some telegram
+    cask_me_some twingate
     cask_me_some visual-studio-code
     cask_me_some vlc
     cask_me_some warp
