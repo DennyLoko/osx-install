@@ -294,9 +294,11 @@ install_casks () {
     cask_me_some firefox
     cask_me_some gcloud-cli
     cask_me_some google-chrome
+    cask_me_some granola
     cask_me_some hoppscotch
     cask_me_some insomnia
     cask_me_some linear
+    cask_me_some microsoft-office
     cask_me_some microsoft-teams
     cask_me_some notion
     cask_me_some ollama-app

@@ -33,7 +33,7 @@ Instala via git e configura no `~/.zshenv`:
 
 ### Apps (casks e Mac App Store)
 
-1Password, Claude (desktop), Docker Desktop, navegadores, Raycast, Spotify, VS Code, Warp e outros — mais Spark e Xcode via `mas`. O Claude Code é instalado pelo [instalador oficial](https://claude.ai/install.sh), não via brew.
+1Password, Claude (desktop), Docker Desktop, navegadores, Granola, Microsoft Office, Microsoft Teams, Raycast, Spotify, VS Code, Warp e outros — mais Spark e Xcode via `mas`. O Claude Code é instalado pelo [instalador oficial](https://claude.ai/install.sh), não via brew.
 
 ### Fontes
 
