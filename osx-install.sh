@@ -313,6 +313,14 @@ install_casks () {
     cask_me_some warp
     cask_me_some zoom
 
+    if [ "$SKIP_APP_STORE" = true ]; then
+        echo ""
+        echo "#######################################################"
+        echo "# MAC APP STORE (skipped via --skip-app-store)"
+        echo "#######################################################"
+        return
+    fi
+
     echo ""
     echo "#######################################################"
     echo "# MAC APP STORE"
@@ -501,6 +509,20 @@ install_misc () {
 
 
 main () {
+    SKIP_APP_STORE=false
+
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --skip-app-store)
+                SKIP_APP_STORE=true
+                shift
+                ;;
+            *)
+                die main "unknown option: $1"
+                ;;
+        esac
+    done
+
     install_tools
     install_casks
     install_fonts
@@ -511,4 +533,4 @@ main () {
     # curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
 }
 
-main
+main "$@"

@@ -8,6 +8,12 @@ Scripts para provisionar um macOS novo do zero: ferramentas de desenvolvimento, 
 curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | sh
 ```
 
+Para pular a instalação dos apps da Mac App Store (Spark, Xcode) — útil quando não é possível/desejável logar na App Store na hora:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | sh -s -- --skip-app-store
+```
+
 Para aplicar os ajustes de sistema (Finder, Dock, hot corners):
 
 ```bash
@@ -34,6 +40,8 @@ Instala via git e configura no `~/.zshenv`:
 ### Apps (casks e Mac App Store)
 
 1Password, Claude (desktop), Docker Desktop, navegadores, Granola, Microsoft Office, Microsoft Teams, Raycast, Spotify, VS Code, Warp e outros — mais Spark e Xcode via `mas`. O Claude Code é instalado pelo [instalador oficial](https://claude.ai/install.sh), não via brew.
+
+Passar `--skip-app-store` pula a instalação via `mas` (Spark, Xcode); o resto do script roda normalmente.
 
 ### Fontes
 
