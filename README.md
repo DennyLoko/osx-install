@@ -8,10 +8,15 @@ Scripts para provisionar um macOS novo do zero: ferramentas de desenvolvimento, 
 curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | sh
 ```
 
-Para pular a instalação dos apps da Mac App Store (Spark, Xcode) — útil quando não é possível/desejável logar na App Store na hora:
+Flags disponíveis (combináveis, passadas depois do `--`):
+
+| Flag | Efeito |
+|------|--------|
+| `--skip-app-store` | Pula a instalação via `mas` (Spark, Xcode) — útil quando não é possível/desejável logar na App Store na hora. |
+| `--setup-git` | Configura identidades git e assinatura de commits (função `setup_git`). **Desligado por padrão** — só roda se a flag for passada. |
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | sh -s -- --skip-app-store
+curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | sh -s -- --skip-app-store --setup-git
 ```
 
 Para aplicar os ajustes de sistema (Finder, Dock, hot corners):
@@ -41,8 +46,6 @@ Instala via git e configura no `~/.zshenv`:
 
 1Password, Claude (desktop), Docker Desktop, navegadores, Granola, Microsoft Office, Microsoft Teams, Raycast, Spotify, VS Code, Warp e outros — mais Spark e Xcode via `mas`. O Claude Code é instalado pelo [instalador oficial](https://claude.ai/install.sh), não via brew.
 
-Passar `--skip-app-store` pula a instalação via `mas` (Spark, Xcode); o resto do script roda normalmente.
-
 ### Fontes
 
 Nerd Fonts (Hack, Inconsolata, JetBrains Mono) e outras fontes de uso em terminal/editor.
@@ -52,6 +55,10 @@ Nerd Fonts (Hack, Inconsolata, JetBrains Mono) e outras fontes de uso em termina
 - Instala o [oh-my-zsh](https://ohmyz.sh/) em modo unattended, com os plugins `git` e `aws`.
 - O tema do oh-my-zsh fica desativado: o prompt é o [starship](https://starship.rs/).
 - Garante no `~/.zshrc`: `~/.local/bin` e `libpq` no PATH, hook do [direnv](https://direnv.net/) e init do starship.
+
+### Identidades git (opcional, via `--setup-git`)
+
+Configura `~/.gitconfig` com resolução automática de identidade por diretório (trabalho por padrão, pessoal em `~/Work/projects/DennyLoko/` via `includeIf`) e assinatura de commits/tags via SSH (1Password `op-ssh-sign`). Não roda a menos que `--setup-git` seja passado — em máquinas onde a identidade git já está configurada (ou é gerenciada de outra forma), o script não sobrescreve nada por padrão.
 
 ## O que o `osx-settings.sh` faz
 

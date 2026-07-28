@@ -511,11 +511,16 @@ install_misc () {
 
 main () {
     SKIP_APP_STORE=false
+    SETUP_GIT=false
 
     while [ $# -gt 0 ]; do
         case "$1" in
             --skip-app-store)
                 SKIP_APP_STORE=true
+                shift
+                ;;
+            --setup-git)
+                SETUP_GIT=true
                 shift
                 ;;
             *)
@@ -529,7 +534,11 @@ main () {
     install_fonts
     # install_gotools
     setup_zsh
-    setup_git
+
+    if [ "$SETUP_GIT" = true ]; then
+        setup_git
+    fi
+
     install_misc
     # curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
 }
