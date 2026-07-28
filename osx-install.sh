@@ -168,6 +168,7 @@ install_tools () {
     # brew_me_some tfenv
     # brew_me_some git-crypt
     brew_me_some aria2
+    brew_me_some azure-cli
     brew_me_some direnv
     brew_me_some ffmpeg
     brew_me_some gcc
