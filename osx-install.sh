@@ -515,6 +515,32 @@ install_misc () {
         ok claude "claude code installed"
     fi
 
+    if ! which -s claude-swap; then
+        info uv "installing claude-swap..."
+        uv tool install claude-swap || \
+            die uv "claude-swap could not be installed"
+        ok uv "claude-swap installed"
+    fi
+
+    # O instalador do bun já adiciona o PATH e o completion no ~/.zshrc
+    if [ ! -x "$HOME/.bun/bin/bun" ]; then
+        info bun "installing bun..."
+        curl -fsSL https://bun.sh/install | bash || \
+            die bun "bun could not be installed"
+        ok bun "bun installed"
+    fi
+
+    if [ ! -x "$HOME/.dotnet/dotnet" ]; then
+        info dotnet "installing .NET SDK..."
+        curl -fsSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 9.0 --install-dir "$HOME/.dotnet" || \
+            die dotnet ".NET SDK could not be installed"
+        ok dotnet ".NET SDK installed"
+    fi
+    _check_env_is_set DOTNET_ROOT || ( \
+        echo 'export DOTNET_ROOT="$HOME/.dotnet"' >> ~/.zshenv && \
+        echo 'command -v dotnet >/dev/null || export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH"' >> ~/.zshenv
+    )
+
     if ! which -s aws; then
         curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "$HOME/Downloads/AWSCLIV2.pkg"
         sudo installer -pkg "$HOME/Downloads/AWSCLIV2.pkg" -target /

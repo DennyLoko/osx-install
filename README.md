@@ -46,6 +46,14 @@ Instala via git e configura no `~/.zshenv`:
 
 1Password, Claude (desktop), DBeaver, Docker Desktop, navegadores, Granola, Microsoft Office, Microsoft Teams, ngrok, OBS, Raycast, Slack, Spotify, VS Code, Warp, Windows App e outros — mais Spark e Xcode via `mas`. O Claude Code é instalado pelo [instalador oficial](https://claude.ai/install.sh), não via brew.
 
+### Outros runtimes e ferramentas
+
+Fora do brew, cada um pelo instalador oficial (pulados se já existirem):
+
+- [bun](https://bun.sh) em `~/.bun` (o próprio instalador ajusta o `~/.zshrc`).
+- .NET SDK 9.0 em `~/.dotnet`, via `dotnet-install.sh`, com `DOTNET_ROOT` no `~/.zshenv`.
+- `claude-swap` via `uv tool install`.
+
 ### Fontes
 
 Nerd Fonts (Hack, Inconsolata, JetBrains Mono) e outras fontes de uso em terminal/editor.
