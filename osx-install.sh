@@ -167,12 +167,18 @@ install_tools () {
     # brew_me_some svn
     # brew_me_some tfenv
     # brew_me_some git-crypt
+    brew_me_some actionlint
     brew_me_some aria2
     brew_me_some azure-cli
+    brew_me_some cocoapods
+    brew_me_some coreutils
+    brew_me_some ctop
     brew_me_some direnv
+    brew_me_some displayplacer
     brew_me_some ffmpeg
     brew_me_some gcc
     brew_me_some gh
+    brew_me_some gitleaks
     brew_me_some gnupg
     brew_me_some httpie
     brew_me_some hub
@@ -183,6 +189,7 @@ install_tools () {
     brew_me_some noti
     brew_me_some opencode
     brew_me_some openssl
+    brew_me_some protobuf
     brew_me_some readline
     brew_me_some reattach-to-user-namespace
     brew_me_some redis
@@ -191,6 +198,7 @@ install_tools () {
     brew_me_some tmux
     brew_me_some tree
     brew_me_some vim
+    brew_me_some vips
     brew_me_some watch
     brew_me_some wget
     brew_me_some uv
