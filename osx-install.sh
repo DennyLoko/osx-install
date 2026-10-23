@@ -290,7 +290,6 @@ install_casks () {
     # cask_me_some mysqlworkbench
     # cask_me_some phpstorm
     # cask_me_some rar
-    # cask_me_some slack
     # cask_me_some tunnelblick
     # cask_me_some webstorm
     cask_me_some 1password
@@ -298,6 +297,7 @@ install_casks () {
     cask_me_some charles
     cask_me_some claude
     cask_me_some cloudflare-warp
+    cask_me_some dbeaver-community
     cask_me_some discord
     cask_me_some docker-desktop
     cask_me_some firefox
@@ -307,19 +307,25 @@ install_casks () {
     cask_me_some hoppscotch
     cask_me_some insomnia
     cask_me_some linear
+    cask_me_some loom
     cask_me_some microsoft-office
     cask_me_some microsoft-teams
+    cask_me_some ngrok
     cask_me_some notion
+    cask_me_some obs
     cask_me_some ollama-app
     cask_me_some postman
     cask_me_some raycast
+    cask_me_some slack
     cask_me_some spotify
+    cask_me_some stats
     cask_me_some stremio
     cask_me_some telegram
     cask_me_some twingate
     cask_me_some visual-studio-code
     cask_me_some vlc
     cask_me_some warp
+    cask_me_some windows-app
     cask_me_some zoom
 
     if [ "$SKIP_APP_STORE" = true ]; then
