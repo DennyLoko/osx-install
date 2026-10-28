@@ -41,11 +41,39 @@ fail_if_empty () {
     test $empty -eq 0
 }
 
+_load_brew_shellenv () {
+    # O instalador não coloca o brew no PATH: Apple Silicon usa
+    # /opt/homebrew, Intel usa /usr/local
+    for prefix in /opt/homebrew /usr/local; do
+        if [ -x "$prefix/bin/brew" ]; then
+            eval "$("$prefix/bin/brew" shellenv)"
+            return
+        fi
+    done
+}
+
 install_brew_if_not_installed () {
+    which -s brew || _load_brew_shellenv
+
     if ! which -s brew; then
         warn brew "installing brew..."
-        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        installer="$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || \
+            die brew "failed to download the installer"
+        # Via `curl | sh` o stdin não é TTY e o instalador cai no modo
+        # não interativo, que exige o sudo já autenticado (sudo -v lê a
+        # senha do /dev/tty). O </dev/null impede que ele consuma o
+        # resto deste script, que também chega pelo stdin.
+        sudo -v || die brew "sudo is required to install brew"
+        NONINTERACTIVE=1 /bin/bash -c "$installer" </dev/null || \
+            die brew "brew could not be installed"
+        _load_brew_shellenv
+        which -s brew || die brew "brew not found after install"
     fi
+
+    grep -qF 'brew shellenv' ~/.zprofile 2>/dev/null || \
+        echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.zprofile
+
+    ok brew "brew installed"
 }
 
 
