@@ -197,7 +197,6 @@ install_tools () {
     # brew_me_some git-crypt
     brew_me_some actionlint
     brew_me_some aria2
-    brew_me_some azure-cli
     brew_me_some cocoapods
     brew_me_some coreutils
     brew_me_some ctop
@@ -322,6 +321,7 @@ install_casks () {
     # cask_me_some webstorm
     cask_me_some 1password
     cask_me_some 1password-cli
+    cask_me_some azure-cli
     cask_me_some charles
     cask_me_some claude
     cask_me_some cloudflare-warp
