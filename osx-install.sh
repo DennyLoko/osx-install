@@ -432,6 +432,10 @@ setup_zsh () {
     grep -qF 'starship init zsh' ~/.zshrc || \
         echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 
+    # Símbolos das Nerd Fonts instaladas em install_fonts
+    [ -f "$HOME/.config/starship.toml" ] || \
+        starship preset nerd-font-symbols -o "$HOME/.config/starship.toml"
+
     # Com a integração do app com o CLI habilitada, o op autentica sob
     # demanda — op signin em cada shell novo só gera prompt de autorização
     # a cada terminal aberto. Remove a linha de setups antigos.
@@ -581,6 +585,166 @@ install_misc () {
 }
 
 
+_claude_plugin_me () {
+    plugin="$1"
+
+    info claude "installing plugin '$plugin'"
+
+    claude plugin list 2>/dev/null | grep -qF "$plugin" || \
+        claude plugin install "$plugin" >/dev/null || \
+            die claude "plugin '$plugin' could not be installed"
+
+    ok claude "plugin '$plugin' installed"
+}
+
+
+setup_claude () {
+    echo ""
+    echo "#######################################################"
+    echo "# CLAUDE CODE (PLUGINS, OMC, CLAUDE-MEM, LITELLM)"
+    echo "#######################################################"
+
+    which -s claude || die claude "claude code not found (install_misc runs first)"
+
+    # O claude-mem e o oh-my-claudecode precisam do bun para instalar as dependências
+    export PATH="$HOME/.bun/bin:$HOME/.local/bin:$PATH"
+
+    # CLI `omc` (omc launch, omc ask, ...)
+    npm_me oh-my-claude-sisyphus
+
+    for marketplace in \
+        anthropics/claude-plugins-official \
+        https://github.com/Yeachan-Heo/oh-my-claudecode.git \
+        thedotmack/claude-mem \
+        warpdotdev/claude-code-warp \
+        PostHog/ai-plugin; do
+        claude plugin marketplace add "$marketplace" >/dev/null 2>&1 || \
+            warn claude "marketplace '$marketplace' could not be added"
+    done
+
+    _claude_plugin_me oh-my-claudecode@omc
+    _claude_plugin_me claude-mem@thedotmack
+    _claude_plugin_me vercel@claude-plugins-official
+    _claude_plugin_me warp@claude-code-warp
+    _claude_plugin_me posthog@posthog
+
+    # Merge: o que já estiver no settings.json ganha dos defaults abaixo
+    settings="$HOME/.claude/settings.json"
+    mkdir -p "$HOME/.claude"
+    [ -f "$settings" ] || echo '{}' > "$settings"
+    jq '{
+        env: {
+            CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1",
+            ANTHROPIC_DEFAULT_SONNET_MODEL: "claude-sonnet-5[1m]",
+            ANTHROPIC_DEFAULT_OPUS_MODEL: "claude-opus-5-5[1m]",
+            OMC_ROUTING_FORCE_INHERIT: "false"
+        },
+        permissions: { defaultMode: "auto" },
+        model: "opus[1m]",
+        effortLevel: "high",
+        theme: "dark"
+    } * .' "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
+
+    # HUD do OMC na status line, quando o /oh-my-claudecode:omc-setup já gerou os scripts
+    if [ -f "$HOME/.claude/hud/omc-hud.mjs" ]; then
+        jq '.statusLine //= {
+            type: "command",
+            command: "sh ${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hud/omc-hud-cache.sh ${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hud/omc-hud.mjs"
+        }' "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
+    else
+        warn claude "run /oh-my-claudecode:omc-setup inside claude to install the HUD and CLAUDE.md"
+    fi
+
+    # Roteamento de modelos do OMC pelos tiers do gateway LiteLLM
+    mkdir -p "$HOME/.config/claude-omc"
+    [ -f "$HOME/.config/claude-omc/config.jsonc" ] || cat > "$HOME/.config/claude-omc/config.jsonc" <<'EOF'
+{
+  // OMC user-level config. O forceInherit precisa ser false também na env var
+  // OMC_ROUTING_FORCE_INHERIT (em ~/.claude/settings.json).
+  "routing": {
+    "enabled": true,
+    "forceInherit": false,
+    "tierModels": {
+      "HIGH": "claude-opus-5-5[1m]",
+      "MEDIUM": "claude-sonnet-5[1m]",
+      "LOW": "claude-haiku-4-5"
+    }
+  },
+  "agents": {
+    "securityReviewer": { "model": "claude-opus-5-5[1m]" },
+    // explore/writer: gemma4:31b-cloud via Ollama, roteado pelo gateway LiteLLM
+    "explore": { "model": "gemma4-31b" },
+    "writer":  { "model": "gemma4-31b" }
+  }
+}
+EOF
+
+    _setup_litellm
+
+    ok claude "claude code configured"
+}
+
+
+_setup_litellm () {
+    # As virtual keys ficam no 1Password (campos vk_claude_code e vk_claude_mem do item abaixo).
+    # Sem o op ou sem os campos, o Claude Code fala direto com a Anthropic.
+    item="op://Private/LiteLLM - danniel.xyz"
+    litellm_url="https://litellm.tools.danniel.xyz"
+
+    if ! which -s op || ! vk_code=$(op read -n "$item/vk_claude_code" 2>/dev/null) || \
+        ! vk_mem=$(op read -n "$item/vk_claude_mem" 2>/dev/null); then
+        warn litellm "virtual keys not found in 1Password ($item), skipping the gateway setup"
+        return
+    fi
+
+    info litellm "configuring the LiteLLM gateway"
+
+    mkdir -p "$HOME/.config/litellm" && chmod 700 "$HOME/.config/litellm"
+    ( umask 077 && printf 'LITELLM_URL=%s\nVK_CLAUDE_CODE=%s\nVK_CLAUDE_MEM=%s\n' \
+        "$litellm_url" "$vk_code" "$vk_mem" > "$HOME/.config/litellm/env" )
+
+    # Claude Code: gateway em qualquer cwd dentro de ~/Work (via direnv)
+    mkdir -p "$HOME/Work"
+    [ -f "$HOME/Work/.envrc" ] || cat > "$HOME/Work/.envrc" <<'EOF'
+# Aponta o Claude Code para o gateway LiteLLM dentro de ~/Work: o Claude Code manda o
+# token da assinatura e o LiteLLM autentica pelo header x-litellm-api-key.
+# Sem gateway: `export LITELLM_TARGET=direct && direnv reload`.
+if [ "${LITELLM_TARGET:-remote}" = remote ] && [ -f "$HOME/.config/litellm/env" ]; then
+  _url=$(grep "^LITELLM_URL=" "$HOME/.config/litellm/env" | cut -d= -f2-)
+  _key=$(grep "^VK_CLAUDE_CODE=" "$HOME/.config/litellm/env" | cut -d= -f2-)
+  if [ -n "$_url" ] && [ -n "$_key" ]; then
+    export ANTHROPIC_BASE_URL="$_url"
+    export CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1
+    export ANTHROPIC_CUSTOM_HEADERS="x-litellm-api-key: $_key"
+  fi
+fi
+unset _url _key
+EOF
+    direnv allow "$HOME/Work" >/dev/null 2>&1 || true
+
+    # claude-mem: observer pelo gateway (merge, preserva o resto do settings.json)
+    mem_settings="$HOME/.claude-mem/settings.json"
+    mkdir -p "$HOME/.claude-mem"
+    [ -f "$mem_settings" ] || echo '{}' > "$mem_settings"
+    jq --arg url "$litellm_url/v1" --arg key "$vk_mem" '. + {
+        CLAUDE_MEM_RUNTIME: "worker",
+        CLAUDE_MEM_PROVIDER: "openai-compatible",
+        CLAUDE_MEM_CLAUDE_AUTH_METHOD: "gateway",
+        CLAUDE_MEM_MODEL: "claude-haiku-5-5",
+        CLAUDE_MEM_QUOTA_FALLBACK_PROVIDER: "claude",
+        CLAUDE_MEM_QUOTA_FALLBACK_MODEL: "claude-haiku-5-5",
+        CLAUDE_MEM_OPENAI_COMPAT_PRESET: "custom",
+        CLAUDE_MEM_OPENAI_COMPAT_BASE_URL: $url,
+        CLAUDE_MEM_OPENAI_COMPAT_MODEL: "glm-5.3-flash",
+        CLAUDE_MEM_OPENAI_COMPAT_API_KEY: $key
+    }' "$mem_settings" > "$mem_settings.tmp" && mv "$mem_settings.tmp" "$mem_settings"
+    chmod 600 "$mem_settings"
+    unset vk_code vk_mem
+
+    ok litellm "LiteLLM gateway configured"
+}
+
+
 main () {
     SKIP_APP_STORE=false
     SETUP_GIT=false
@@ -612,6 +776,7 @@ main () {
     fi
 
     install_misc
+    setup_claude
     # curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
 }
 

@@ -63,6 +63,18 @@ Nerd Fonts (Hack, Inconsolata, JetBrains Mono) e outras fontes de uso em termina
 - Instala o [oh-my-zsh](https://ohmyz.sh/) em modo unattended, com os plugins `git` e `aws`.
 - O tema do oh-my-zsh fica desativado: o prompt é o [starship](https://starship.rs/).
 - Garante no `~/.zshrc`: `~/.local/bin` e `libpq` no PATH, hook do [direnv](https://direnv.net/) e init do starship.
+- Cria o `~/.config/starship.toml` com o preset `nerd-font-symbols`, se ele ainda não existir.
+
+### Claude Code (plugins, OMC, claude-mem, LiteLLM)
+
+A função `setup_claude` roda depois do `install_misc`:
+
+- Instala o CLI `omc` (`npm -g oh-my-claude-sisyphus`) e os plugins `oh-my-claudecode`, `claude-mem`, `vercel`, `warp` e `posthog`, com seus marketplaces.
+- Faz merge de defaults no `~/.claude/settings.json` (modelos Opus/Sonnet com contexto de 1M, `defaultMode: auto`, agent teams, `effortLevel: high`). O que já estiver no arquivo é mantido.
+- Cria `~/.config/claude-omc/config.jsonc` com o roteamento de modelos do OMC por tier.
+- Gateway [LiteLLM](https://litellm.tools.danniel.xyz): lê as virtual keys dos campos `vk_claude_code` e `vk_claude_mem` do item `LiteLLM - danniel.xyz` (vault Private) do 1Password. Grava `~/.config/litellm/env` (chmod 600) e o `~/Work/.envrc`, que aponta o Claude Code para o gateway em qualquer cwd dentro de `~/Work`. Também configura o observer do claude-mem para usar o gateway. Sem o `op` ou sem os campos, a etapa é pulada e o Claude Code fala direto com a Anthropic.
+
+O HUD e o `CLAUDE.md` do OMC ficam por conta do `/oh-my-claudecode:omc-setup`, rodado dentro do `claude` (ver os passos manuais).
 
 ### Identidades git (opcional, via `--setup-git`)
 
@@ -81,3 +93,5 @@ Ajustes de `defaults` do macOS:
 1. Entrar no 1Password e habilitar o **SSH agent** (Settings → Developer) — a autenticação SSH depende dele.
 2. Para usar o `op` CLI, habilitar a integração com o app (Settings → Developer → **Integrate with 1Password CLI**; no macOS Sequoia+ o terminal precisa de permissão para acessar dados de outros apps). Com a integração ativa o `op` autentica sob demanda — **não** coloque `op signin` no `~/.zshrc`, senão cada terminal novo dispara um prompt de autorização.
 3. Abrir um terminal novo (ou `source ~/.zshrc`) para o shell recém-configurado valer.
+4. Rodar `claude`, fazer login e executar `/oh-my-claudecode:omc-setup`, que instala o HUD e o `CLAUDE.md` do OMC. Depois, rodar o `osx-install.sh` de novo para ligar o HUD na status line.
+5. Dentro de `~/Work`, rodar `direnv allow` se o direnv pedir.
