@@ -685,15 +685,45 @@ EOF
 }
 
 
+_has_tty () {
+    ( : </dev/tty ) 2>/dev/null
+}
+
+
+# Espera o 1Password ficar pronto para o `op read`. Numa máquina nova o app e o CLI
+# acabaram de ser instalados por install_casks, mas ainda falta logar no app e ligar
+# a integração com o CLI, então pede isso ao usuário. Via `curl | sh` o stdin é o
+# próprio script, por isso a resposta é lida do /dev/tty.
+_wait_for_1password () {
+    ref="$1"
+
+    which -s op || return 1
+    op read -n "$ref" >/dev/null 2>&1 && return 0
+    _has_tty || return 1
+
+    open -a 1Password 2>/dev/null || true
+    warn 1password "sign in to the 1Password app and enable Settings > Developer > Integrate with 1Password CLI"
+    while true; do
+        printf 'Press Enter to retry or type s to skip: ' >/dev/tty
+        read -r answer </dev/tty || return 1
+        [ "$answer" = s ] && return 1
+        op read -n "$ref" >/dev/null 2>&1 && return 0
+        warn 1password "could not read $ref yet"
+    done
+}
+
+
 _setup_litellm () {
     # As virtual keys ficam no 1Password (campos vk_claude_code e vk_claude_mem do item abaixo).
-    # Sem o op ou sem os campos, o Claude Code fala direto com a Anthropic.
+    # Sem elas, o Claude Code fala direto com a Anthropic; rodar o script de novo depois
+    # configura o gateway.
     item="op://Private/LiteLLM - danniel.xyz"
     litellm_url="https://litellm.tools.danniel.xyz"
 
-    if ! which -s op || ! vk_code=$(op read -n "$item/vk_claude_code" 2>/dev/null) || \
+    if ! _wait_for_1password "$item/vk_claude_code" || \
+        ! vk_code=$(op read -n "$item/vk_claude_code" 2>/dev/null) || \
         ! vk_mem=$(op read -n "$item/vk_claude_mem" 2>/dev/null); then
-        warn litellm "virtual keys not found in 1Password ($item), skipping the gateway setup"
+        warn litellm "virtual keys not available from 1Password ($item), skipping the gateway setup"
         return
     fi
 
