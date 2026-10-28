@@ -216,6 +216,10 @@ install_tools () {
     brew_me_some noti
     brew_me_some opencode
     brew_me_some openssl
+    # O python-build procura openssl@3 → openssl@1.1 → openssl. Sem o @3
+    # ele tenta o @1.1, que não existe mais no brew (erro na tela), e cai
+    # no openssl, que hoje é o @4, sem suporte até o Python 3.14.
+    brew_me_some openssl@3
     brew_me_some protobuf
     brew_me_some readline
     brew_me_some reattach-to-user-namespace
