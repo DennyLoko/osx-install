@@ -19,7 +19,7 @@ Flags disponíveis (combináveis, passadas depois do `--`):
 curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | sh -s -- --skip-app-store --setup-git
 ```
 
-Para aplicar os ajustes de sistema (Finder, Dock, hot corners):
+Para aplicar os ajustes de sistema (Dock, trackpad, teclado, energia etc.):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
@@ -82,11 +82,19 @@ Configura `~/.gitconfig` com resolução automática de identidade por diretóri
 
 ## O que o `osx-settings.sh` faz
 
-Ajustes de `defaults` do macOS:
+Ajustes de `defaults` e `pmset` do macOS (pede `sudo` para a parte de energia):
 
-- **Finder**: mostra todas as extensões, path bar a partir da home e caminho POSIX no título.
-- **Dock**: auto-hide (sem delay), magnificação e animações mais rápidas.
-- **Hot corner**: canto inferior direito abre o Launchpad.
+- **Aparência**: modo escuro.
+- **Finder**: mostra todas as extensões, path bar (a partir da home), caminho POSIX no título, visualização em colunas e janelas novas abrindo em Documentos.
+- **Dock**: auto-hide (sem delay), ícones pequenos com magnificação, animações mais rápidas e sem apps recentes.
+- **Mesa e janelas**: clicar no papel de parede não revela a mesa, sem margem entre janelas lado a lado, ícones e widgets da mesa ocultos.
+- **Hot corner**: canto inferior direito desligado.
+- **Trackpad**: toque para clicar (embutido e Bluetooth) e velocidade 1.5.
+- **Teclado**: repetição de tecla rápida e sem correção automática, maiúscula automática ou ponto com espaço duplo.
+- **Barra de menus**: porcentagem da bateria.
+- **Descanso de tela e energia**: protetor de tela em 3h; tela apaga em 20 min na bateria e 2h na tomada; na tomada o Mac nunca dorme.
+
+Trackpad e teclado só valem depois de sair e entrar de novo na sessão.
 
 ## Passos manuais pós-instalação
 

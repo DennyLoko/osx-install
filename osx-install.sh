@@ -607,7 +607,7 @@ setup_claude () {
     which -s claude || die claude "claude code not found (install_misc runs first)"
 
     # O claude-mem e o oh-my-claudecode precisam do bun para instalar as dependências
-    export PATH="$HOME/.bun/bin:$HOME/.local/bin:$PATH"
+    export PATH="$HOME/.bun/bin:$PATH"
 
     # CLI `omc` (omc launch, omc ask, ...)
     npm_me oh-my-claude-sisyphus
@@ -778,6 +778,11 @@ EOF
 main () {
     SKIP_APP_STORE=false
     SETUP_GIT=false
+
+    # O instalador do Claude Code e o `uv tool install` colocam os binários em
+    # ~/.local/bin, que não está no PATH deste processo (o ~/.zshrc só vale
+    # para shells novos). Sem isso o `which -s claude` falha logo após instalar.
+    export PATH="$HOME/.local/bin:$PATH"
 
     while [ $# -gt 0 ]; do
         case "$1" in
