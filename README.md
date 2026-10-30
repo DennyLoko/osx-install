@@ -100,6 +100,11 @@ Ajustes de `defaults` e `pmset` do macOS (pede `sudo` para a parte de energia):
 - **Aparência**: modo escuro.
 - **Finder**: mostra todas as extensões, path bar (a partir da home), caminho POSIX no título, visualização em colunas e janelas novas abrindo em Documentos.
 - **Dock**: auto-hide (sem delay), ícones pequenos com magnificação, animações mais rápidas e sem apps recentes.
+- **Itens do Dock** (via [`dockutil`](https://github.com/kcrawford/dockutil), instalado pelo `osx-install.sh`): o Dock é montado do zero, na ordem dada, então rodar de novo dá sempre o mesmo resultado. Por padrão: Apps, Spark Desktop, Slack, Google Chrome, Warp e Ajustes do Sistema, mais a pasta Downloads (leque, ordenada por data de inclusão). App que não estiver instalado é pulado com aviso; sem `dockutil`, a etapa toda é pulada. Para trocar a lista, passe caminhos separados por vírgula em `DOCK_APPS` e `DOCK_FOLDERS`:
+
+  ```bash
+  DOCK_APPS="/System/Applications/Apps.app,/Applications/Google Chrome.app,/Applications/Warp.app" sh osx-settings.sh
+  ```
 - **Mesa e janelas**: clicar no papel de parede não revela a mesa, sem margem entre janelas lado a lado, ícones e widgets da mesa ocultos.
 - **Hot corner**: canto inferior direito desligado.
 - **Trackpad**: toque para clicar (embutido e Bluetooth) e velocidade 1.5.

@@ -202,6 +202,7 @@ install_tools () {
     brew_me_some ctop
     brew_me_some direnv
     brew_me_some displayplacer
+    brew_me_some dockutil
     brew_me_some ffmpeg
     brew_me_some gcc
     brew_me_some gh

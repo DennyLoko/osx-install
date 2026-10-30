@@ -30,6 +30,35 @@ defaults write com.apple.dock autohide-delay -float 0
 defaults write com.apple.dock autohide-time-modifier -float 0.5
 defaults write com.apple.dock expose-animation-duration -float 0.15
 
+# Dock items: rebuilt from scratch, in order, so running again gives the same
+# Dock. Override with DOCK_APPS (comma-separated .app paths) and DOCK_FOLDERS
+# (comma-separated folders, shown as a fan sorted by date added).
+# Needs dockutil (installed by osx-install.sh); skipped without it.
+DOCK_APPS="${DOCK_APPS:-/System/Applications/Apps.app,/Applications/Spark Desktop.app,/Applications/Slack.app,/Applications/Google Chrome.app,/Applications/Warp.app,/System/Applications/System Settings.app}"
+DOCK_FOLDERS="${DOCK_FOLDERS:-$HOME/Downloads}"
+
+if command -v dockutil >/dev/null 2>&1; then
+    dockutil --remove all --no-restart >/dev/null
+
+    old_ifs="$IFS"; IFS=,
+    for app in $DOCK_APPS; do
+        app=$(printf '%s' "$app" | sed 's/^ *//; s/ *$//')
+        [ -z "$app" ] && continue
+        if [ -d "$app" ]; then
+            dockutil --add "$app" --no-restart >/dev/null
+        else
+            echo "Dock: $app not found, skipping" >&2
+        fi
+    done
+    for folder in $DOCK_FOLDERS; do
+        folder=$(printf '%s' "$folder" | sed 's/^ *//; s/ *$//')
+        [ -d "$folder" ] && dockutil --add "$folder" --view fan --display stack --sort dateadded --no-restart >/dev/null
+    done
+    IFS="$old_ifs"
+else
+    echo "dockutil not found, skipping the Dock items (brew install dockutil)" >&2
+fi
+
 # Desktop & windows: no click-on-wallpaper to reveal the desktop, no margins
 # between tiled windows, hide desktop icons and widgets
 defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool no
