@@ -14,6 +14,7 @@ Flags disponíveis (combináveis, passadas depois do `--`):
 |------|--------|
 | `--skip-app-store` | Pula a instalação via `mas` (Spark, Xcode) — útil quando não é possível/desejável logar na App Store na hora. |
 | `--setup-git` | Configura identidades git e assinatura de commits (função `setup_git`). **Desligado por padrão** — só roda se a flag for passada. |
+| `--setup-ssh` | Configura o SSH com o agente do 1Password e os hosts pessoais (função `setup_ssh`). **Desligado por padrão**. |
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | sh -s -- --skip-app-store --setup-git
@@ -80,6 +81,17 @@ O HUD e o `CLAUDE.md` do OMC ficam por conta do `/oh-my-claudecode:omc-setup`, r
 
 Configura `~/.gitconfig` com resolução automática de identidade por diretório (trabalho por padrão, pessoal em `~/Work/projects/DennyLoko/` via `includeIf`) e assinatura de commits/tags via SSH (1Password `op-ssh-sign`). Não roda a menos que `--setup-git` seja passado — em máquinas onde a identidade git já está configurada (ou é gerenciada de outra forma), o script não sobrescreve nada por padrão.
 
+### SSH (opcional, via `--setup-ssh`)
+
+- Com `SSH_KEY_VAULTS` (vaults separados por vírgula), grava o `~/.config/1Password/ssh/agent.toml` com as chaves desses vaults, na ordem dada. Sem a variável o arquivo não é tocado, e o agente usa o padrão do 1Password (só o vault Personal/Private/Employee). Numa máquina pessoal, basta não passar a variável. Via `curl`, a variável vai no `sh`:
+
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | SSH_KEY_VAULTS=Marisa.Care,Private sh -s -- --setup-ssh
+  ```
+- No `~/.ssh/config`, coloca `Include ~/.ssh/config.d/*` no topo, o host `github-personal` (push nos repos pessoais com a chave do GitHub pessoal) e um `Host *` no fim apontando o `IdentityAgent` para o 1Password.
+- Os hosts pessoais (endereço, usuário, forwarding) não ficam no repo. Eles vêm do campo de notas do item `SSH config` (vault Private) do 1Password e são gravados em `~/.ssh/config.d/1password` (chmod 600). A nota é a fonte da verdade: o arquivo é regravado a cada execução, então mudanças nos hosts são feitas no 1Password.
+- O que já estiver no `~/.ssh/config` é mantido. Se o 1Password não estiver pronto, a parte dos hosts é pulada com um aviso (como no LiteLLM).
+
 ## O que o `osx-settings.sh` faz
 
 Ajustes de `defaults` e `pmset` do macOS (pede `sudo` para a parte de energia):
@@ -98,7 +110,7 @@ Trackpad e teclado só valem depois de sair e entrar de novo na sessão.
 
 ## Passos manuais pós-instalação
 
-1. Entrar no 1Password e habilitar o **SSH agent** (Settings → Developer) — a autenticação SSH depende dele.
+1. Entrar no 1Password e habilitar o **SSH agent** (Settings → Developer) — a autenticação SSH depende dele. O `--setup-ssh` configura o lado do SSH, mas não liga o agente.
 2. Para usar o `op` CLI, habilitar a integração com o app (Settings → Developer → **Integrate with 1Password CLI**; no macOS Sequoia+ o terminal precisa de permissão para acessar dados de outros apps). Com a integração ativa o `op` autentica sob demanda — **não** coloque `op signin` no `~/.zshrc`, senão cada terminal novo dispara um prompt de autorização.
 3. Abrir um terminal novo (ou `source ~/.zshrc`) para o shell recém-configurado valer.
 4. Rodar `claude`, fazer login e executar `/oh-my-claudecode:omc-setup`, que instala o HUD e o `CLAUDE.md` do OMC. Depois, rodar o `osx-install.sh` de novo para ligar o HUD na status line.

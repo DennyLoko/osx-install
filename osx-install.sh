@@ -508,6 +508,76 @@ EOF
 }
 
 
+setup_ssh () {
+    echo ""
+    echo "#######################################################"
+    echo "# SSH (1PASSWORD AGENT + HOSTS)"
+    echo "#######################################################"
+
+    info ssh "configuring the 1Password SSH agent"
+
+    # Vaults cujas chaves o agente do 1Password oferece, separados por vírgula
+    # (ex.: SSH_KEY_VAULTS=Marisa.Care,Private). Sem a variável o agent.toml não é
+    # tocado, e sem o arquivo o agente usa o padrão: o vault Personal/Private/Employee.
+    if [ -n "${SSH_KEY_VAULTS:-}" ]; then
+        mkdir -p "$HOME/.config/1Password/ssh"
+        agent_toml="$HOME/.config/1Password/ssh/agent.toml"
+        : > "$agent_toml"
+        old_ifs="$IFS"; IFS=,
+        for vault in $SSH_KEY_VAULTS; do
+            vault=$(printf '%s' "$vault" | sed 's/^ *//; s/ *$//')
+            [ -n "$vault" ] && printf '[[ssh-keys]]\nvault = "%s"\n\n' "$vault" >> "$agent_toml"
+        done
+        IFS="$old_ifs"
+        ok ssh "agent.toml written with vaults: $SSH_KEY_VAULTS"
+    fi
+
+    mkdir -p "$HOME/.ssh/config.d" && chmod 700 "$HOME/.ssh" "$HOME/.ssh/config.d"
+    touch "$HOME/.ssh/config" && chmod 600 "$HOME/.ssh/config"
+
+    # O Include precisa vir antes de qualquer Host: no ssh o primeiro valor de
+    # cada opção vence, e o `Host *` do agente fica por último.
+    if ! grep -qF 'Include ~/.ssh/config.d/*' "$HOME/.ssh/config"; then
+        { printf 'Include ~/.ssh/config.d/*\n\n'; cat "$HOME/.ssh/config"; } > "$HOME/.ssh/config.tmp"
+        mv "$HOME/.ssh/config.tmp" "$HOME/.ssh/config" && chmod 600 "$HOME/.ssh/config"
+    fi
+
+    # Push nos repos pessoais pela chave do GitHub pessoal (o agente oferece a
+    # chave privada; o .pub só diz qual delas usar).
+    [ -f "$HOME/.ssh/id_dennyloko_github.pub" ] || \
+        echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKv/tvAXsYB2cNNRiXGvA80aQrLpegV5RzGBPaAHHjs' > "$HOME/.ssh/id_dennyloko_github.pub"
+
+    grep -qF 'Host github-personal' "$HOME/.ssh/config" || cat >> "$HOME/.ssh/config" <<'EOF'
+
+Host github-personal
+	HostName github.com
+	User git
+	IdentitiesOnly yes
+	IdentityFile ~/.ssh/id_dennyloko_github.pub
+EOF
+
+    grep -qF '1password/t/agent.sock' "$HOME/.ssh/config" || cat >> "$HOME/.ssh/config" <<'EOF'
+
+# 1password
+Host *
+	IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+EOF
+
+    # Hosts pessoais (endereços, usuários) ficam numa nota do 1Password, fora do
+    # repo. A nota é a fonte da verdade: o arquivo é regravado a cada execução.
+    ref="op://Private/SSH config/notesPlain"
+    if _wait_for_1password "$ref" && hosts=$(op read -n "$ref" 2>/dev/null); then
+        ( umask 077 && printf '%s\n' "$hosts" > "$HOME/.ssh/config.d/1password" )
+        unset hosts
+        ok ssh "hosts written to ~/.ssh/config.d/1password"
+    else
+        warn ssh "could not read $ref, skipping the personal hosts"
+    fi
+
+    ok ssh "ssh configured"
+}
+
+
 install_misc () {
     echo ""
     echo "#######################################################"
@@ -778,6 +848,7 @@ EOF
 main () {
     SKIP_APP_STORE=false
     SETUP_GIT=false
+    SETUP_SSH=false
 
     # O instalador do Claude Code e o `uv tool install` colocam os binários em
     # ~/.local/bin, que não está no PATH deste processo (o ~/.zshrc só vale
@@ -794,6 +865,10 @@ main () {
                 SETUP_GIT=true
                 shift
                 ;;
+            --setup-ssh)
+                SETUP_SSH=true
+                shift
+                ;;
             *)
                 die main "unknown option: $1"
                 ;;
@@ -808,6 +883,10 @@ main () {
 
     if [ "$SETUP_GIT" = true ]; then
         setup_git
+    fi
+
+    if [ "$SETUP_SSH" = true ]; then
+        setup_ssh
     fi
 
     install_misc
