@@ -845,10 +845,26 @@ EOF
 }
 
 
+setup_macos () {
+    # Rodando de um clone, usa o osx-settings.sh ao lado (com as mudanças locais);
+    # via `curl | sh` não há arquivo local, então baixa o da master.
+    # No `curl | sh` o BASH_SOURCE vem vazio (e o $0 é só "sh", que apontaria para o
+    # diretório atual), por isso não cai para o $0.
+    script_dir=""
+    [ -n "${BASH_SOURCE[0]:-}" ] && script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+    if [ -n "$script_dir" ] && [ -f "$script_dir/osx-settings.sh" ]; then
+        sh "$script_dir/osx-settings.sh"
+    else
+        curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
+    fi
+}
+
+
 main () {
     SKIP_APP_STORE=false
     SETUP_GIT=false
     SETUP_SSH=false
+    SETUP_MACOS=false
 
     # O instalador do Claude Code e o `uv tool install` colocam os binários em
     # ~/.local/bin, que não está no PATH deste processo (o ~/.zshrc só vale
@@ -867,6 +883,10 @@ main () {
                 ;;
             --setup-ssh)
                 SETUP_SSH=true
+                shift
+                ;;
+            --setup-macos)
+                SETUP_MACOS=true
                 shift
                 ;;
             *)
@@ -891,7 +911,11 @@ main () {
 
     install_misc
     setup_claude
-    # curl -sSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
+
+    # Por último: reinicia Finder, Dock e barra de menus e pede sudo para o pmset.
+    if [ "$SETUP_MACOS" = true ]; then
+        setup_macos
+    fi
 }
 
 main "$@"

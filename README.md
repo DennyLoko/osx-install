@@ -15,12 +15,13 @@ Flags disponíveis (combináveis, passadas depois do `--`):
 | `--skip-app-store` | Pula a instalação via `mas` (Spark, Xcode) — útil quando não é possível/desejável logar na App Store na hora. |
 | `--setup-git` | Configura identidades git e assinatura de commits (função `setup_git`). **Desligado por padrão** — só roda se a flag for passada. |
 | `--setup-ssh` | Configura o SSH com o agente do 1Password e os hosts pessoais (função `setup_ssh`). **Desligado por padrão**. |
+| `--setup-macos` | Roda o `osx-settings.sh` no fim da instalação. Rodando de um clone, usa o arquivo local; via `curl`, baixa o da `master`. **Desligado por padrão**. |
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | sh -s -- --skip-app-store --setup-git
+curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | sh -s -- --skip-app-store --setup-git --setup-ssh --setup-macos
 ```
 
-Para aplicar os ajustes de sistema (Dock, trackpad, teclado, energia etc.):
+Para aplicar só os ajustes de sistema (Dock, trackpad, teclado, energia etc.), sem o resto:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-settings.sh | sh
