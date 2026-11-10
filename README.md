@@ -80,14 +80,14 @@ No fim roda o `omc setup`, que grava o `~/.claude/CLAUDE.md` do OMC, o HUD e a s
 
 ### Identidades git (opcional, via `--setup-git`)
 
-Configura `~/.gitconfig` com resolução automática de identidade por diretório (trabalho por padrão, pessoal em `~/Work/projects/DennyLoko/` via `includeIf`) e assinatura de commits/tags via SSH (1Password `op-ssh-sign`). Não roda a menos que `--setup-git` seja passado — em máquinas onde a identidade git já está configurada (ou é gerenciada de outra forma), o script não sobrescreve nada por padrão.
+Configura `~/.gitconfig` com a identidade pessoal (via `~/.gitconfig-personal`) e assinatura de commits/tags via SSH (1Password `op-ssh-sign`). Não roda a menos que `--setup-git` seja passado — em máquinas onde a identidade git já está configurada (ou é gerenciada de outra forma), o script não sobrescreve nada por padrão.
 
 ### SSH (opcional, via `--setup-ssh`)
 
 - Com `SSH_KEY_VAULTS` (vaults separados por vírgula), grava o `~/.config/1Password/ssh/agent.toml` com as chaves desses vaults, na ordem dada. Sem a variável o arquivo não é tocado, e o agente usa o padrão do 1Password (só o vault Personal/Private/Employee). Numa máquina pessoal, basta não passar a variável. Via `curl`, a variável vai no `sh`:
 
   ```bash
-  curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | SSH_KEY_VAULTS=Marisa.Care,Private sh -s -- --setup-ssh
+  curl -fsSL https://raw.githubusercontent.com/DennyLoko/osx-install/master/osx-install.sh | SSH_KEY_VAULTS=Private,Infra sh -s -- --setup-ssh
   ```
 - No `~/.ssh/config`, coloca `Include ~/.ssh/config.d/*` no topo, o host `github-personal` (push nos repos pessoais com a chave do GitHub pessoal) e um `Host *` no fim apontando o `IdentityAgent` para o 1Password.
 - Os hosts pessoais (endereço, usuário, forwarding) não ficam no repo. Eles vêm do campo de notas do item `SSH config` (vault Private) do 1Password e são gravados em `~/.ssh/config.d/1password` (chmod 600). A nota é a fonte da verdade: o arquivo é regravado a cada execução, então mudanças nos hosts são feitas no 1Password.

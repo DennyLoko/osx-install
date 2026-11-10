@@ -480,35 +480,22 @@ setup_git () {
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKv/tvAXsYB2cNNRiXGvA80aQrLpegV5RzGBPaAHHjs
 EOF
 
-    [ -f "$HOME/.gitconfig-work" ] || cat > "$HOME/.gitconfig-work" <<'EOF'
-[user]
-	name = Danniel Magno
-	email = danniel.magno@marisa.care
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGApn6A/F5Xvbjm8CY1fZy65BkQEfdNyq3JwfWEhQBet
-EOF
-
     mkdir -p "$HOME/.config/git"
     [ -f "$HOME/.config/git/allowed_signers" ] || cat > "$HOME/.config/git/allowed_signers" <<'EOF'
 dennyloko@gmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKv/tvAXsYB2cNNRiXGvA80aQrLpegV5RzGBPaAHHjs
-danniel.magno@marisa.care ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGApn6A/F5Xvbjm8CY1fZy65BkQEfdNyq3JwfWEhQBet
 EOF
 
     # Checa pelo conteúdo, não pela existência do arquivo: o `git config --global
     # core.pager` do install_misc cria o ~/.gitconfig numa execução sem --setup-git, e
     # aí um `[ -f ]` pulava as identidades e a assinatura para sempre.
-    grep -qF '.gitconfig-work' "$HOME/.gitconfig" 2>/dev/null || cat >> "$HOME/.gitconfig" <<'EOF'
+    grep -qF '.gitconfig-personal' "$HOME/.gitconfig" 2>/dev/null || cat >> "$HOME/.gitconfig" <<'EOF'
 
-# Identidade padrão: trabalho. Tudo neste computador usa a identidade
-# do trabalho, exceto os repos pessoais (override abaixo).
+# Identidade (nome, e-mail e chave de assinatura)
 [include]
-	path = ~/.gitconfig-work
-
-# Repos pessoais (GitHub DennyLoko)
-[includeIf "gitdir:~/Work/projects/DennyLoko/"]
 	path = ~/.gitconfig-personal
 
 # Assinatura de commits via chave SSH do 1Password.
-# A chave usada (user.signingkey) vem do arquivo de identidade incluído acima.
+# A chave usada (user.signingkey) vem do ~/.gitconfig-personal.
 [gpg]
 	format = ssh
 
@@ -536,7 +523,7 @@ setup_ssh () {
     info ssh "configuring the 1Password SSH agent"
 
     # Vaults cujas chaves o agente do 1Password oferece, separados por vírgula
-    # (ex.: SSH_KEY_VAULTS=Marisa.Care,Private). Sem a variável o agent.toml não é
+    # (ex.: SSH_KEY_VAULTS=Private,Infra). Sem a variável o agent.toml não é
     # tocado, e sem o arquivo o agente usa o padrão: o vault Personal/Private/Employee.
     if [ -n "${SSH_KEY_VAULTS:-}" ]; then
         mkdir -p "$HOME/.config/1Password/ssh"
