@@ -35,7 +35,7 @@ Instala o Homebrew (se necessário) e pacotes de uso diário: `gh`, `jq`, `httpi
 
 ### Gerenciadores de versão de runtimes
 
-Instala via git e configura no `~/.zshenv`:
+Instala via git e configura no `~/.zshenv`. O `~/.zprofile` recoloca os shims na frente do `/opt/homebrew/bin`, senão no shell de login o `python3`/`ruby` do brew ganhariam dos do pyenv/rbenv:
 
 | Runtime | Gerenciador | Versão padrão |
 |---------|-------------|---------------|
@@ -76,7 +76,7 @@ A função `setup_claude` roda depois do `install_misc`:
 - Cria `~/.config/claude-omc/config.jsonc` com o roteamento de modelos do OMC por tier.
 - Gateway [LiteLLM](https://litellm.tools.danniel.xyz): lê as virtual keys dos campos `vk_claude_code` e `vk_claude_mem` do item `LiteLLM - danniel.xyz` (vault Private) do 1Password. Grava `~/.config/litellm/env` (chmod 600) e o `~/Work/.envrc`, que aponta o Claude Code para o gateway em qualquer cwd dentro de `~/Work`. Também configura o observer do claude-mem para usar o gateway. O 1Password e o `op` são instalados antes, pelo `install_casks`. Numa máquina nova, o script abre o app e espera você logar e ligar a integração com o CLI (Enter tenta de novo, `s` pula). Sem terminal interativo, ou se você pular, a etapa fica de fora e o Claude Code fala direto com a Anthropic. Rodar o script de novo depois configura o gateway.
 
-O HUD e o `CLAUDE.md` do OMC ficam por conta do `/oh-my-claudecode:omc-setup`, rodado dentro do `claude` (ver os passos manuais).
+No fim roda o `omc setup`, que grava o `~/.claude/CLAUDE.md` do OMC, o HUD e a status line (hooks, agentes e skills vêm do plugin). Se falhar, rode `/oh-my-claudecode:omc-setup` dentro do `claude`.
 
 ### Identidades git (opcional, via `--setup-git`)
 
@@ -119,5 +119,5 @@ Trackpad e teclado só valem depois de sair e entrar de novo na sessão.
 1. Entrar no 1Password e habilitar o **SSH agent** (Settings → Developer) — a autenticação SSH depende dele. O `--setup-ssh` configura o lado do SSH, mas não liga o agente.
 2. Para usar o `op` CLI, habilitar a integração com o app (Settings → Developer → **Integrate with 1Password CLI**; no macOS Sequoia+ o terminal precisa de permissão para acessar dados de outros apps). Com a integração ativa o `op` autentica sob demanda — **não** coloque `op signin` no `~/.zshrc`, senão cada terminal novo dispara um prompt de autorização.
 3. Abrir um terminal novo (ou `source ~/.zshrc`) para o shell recém-configurado valer.
-4. Rodar `claude`, fazer login e executar `/oh-my-claudecode:omc-setup`, que instala o HUD e o `CLAUDE.md` do OMC. Depois, rodar o `osx-install.sh` de novo para ligar o HUD na status line.
+4. Rodar `claude` e fazer login.
 5. Dentro de `~/Work`, rodar `direnv allow` se o direnv pedir.

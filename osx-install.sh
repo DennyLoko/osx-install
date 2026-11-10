@@ -94,7 +94,9 @@ _update_brew() {
         return  # bail out -- already done
     fi
 
-    trap "{ rm -f .brew_updated; exit 255; }" EXIT
+    # Só limpa o marcador: um `exit` aqui trocaria o código de saída do script
+    # inteiro (antes saía sempre 255, mesmo com sucesso)
+    trap 'rm -f .brew_updated' EXIT
     touch .brew_updated
 
     info brew "updating to have the latest formulas..."
@@ -290,6 +292,17 @@ install_tools () {
     #     echo 'eval "$(tfenv init -)"' >> ~/.zshenv
     # )
 
+    # O ~/.zshenv roda antes do /etc/zprofile (path_helper) e do ~/.zprofile
+    # (brew shellenv), que jogam o /opt/homebrew/bin na frente dos shims: no shell
+    # de login o python3/ruby viravam os do brew, não os do pyenv/rbenv. Recoloca os
+    # shims na frente depois do brew; o `typeset -U` remove as entradas duplicadas.
+    grep -qF '# shims dos gerenciadores de versão' ~/.zprofile 2>/dev/null || cat >> ~/.zprofile <<'EOF'
+
+# shims dos gerenciadores de versão na frente do brew (ver osx-install.sh)
+export PATH="$HOME/.pyenv/shims:$HOME/.rbenv/shims:$HOME/.nodenv/shims:$HOME/.goenv/shims:$PATH"
+typeset -U path PATH
+EOF
+
     source ~/.zshenv
 
     nodenv install -s 24.9.0
@@ -420,7 +433,11 @@ setup_zsh () {
     perl -i -pe 's/^ZSH_THEME=.*/ZSH_THEME=""/' ~/.zshrc
     perl -i -pe 's/^plugins=\(git\)$/plugins=(git aws)/' ~/.zshrc
 
-    grep -qF '.local/bin' ~/.zshrc || \
+    # ~/.local/bin: claude (instalador oficial) e as ferramentas do `uv tool install`.
+    # Ignora linhas comentadas: o template do oh-my-zsh já traz
+    # `# export PATH=$HOME/bin:$HOME/.local/bin:...`, e um grep simples achava o
+    # comentário e não adicionava nada (o claude ficava fora do PATH).
+    grep -qE '^[^#]*\.local/bin' ~/.zshrc || \
         echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
 
     # libpq is keg-only, so psql & friends aren't linked by brew
@@ -476,9 +493,10 @@ dennyloko@gmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKKv/tvAXsYB2cNNRiXGvA80
 danniel.magno@marisa.care ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGApn6A/F5Xvbjm8CY1fZy65BkQEfdNyq3JwfWEhQBet
 EOF
 
-    [ -f "$HOME/.gitconfig" ] || cat > "$HOME/.gitconfig" <<'EOF'
-[core]
-	pager = diff-so-fancy | less --tabs=4 -RFX
+    # Checa pelo conteúdo, não pela existência do arquivo: o `git config --global
+    # core.pager` do install_misc cria o ~/.gitconfig numa execução sem --setup-git, e
+    # aí um `[ -f ]` pulava as identidades e a assinatura para sempre.
+    grep -qF '.gitconfig-work' "$HOME/.gitconfig" 2>/dev/null || cat >> "$HOME/.gitconfig" <<'EOF'
 
 # Identidade padrão: trabalho. Tudo neste computador usa a identidade
 # do trabalho, exceto os repos pessoais (override abaixo).
@@ -716,14 +734,16 @@ setup_claude () {
         theme: "dark"
     } * .' "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
 
-    # HUD do OMC na status line, quando o /oh-my-claudecode:omc-setup já gerou os scripts
-    if [ -f "$HOME/.claude/hud/omc-hud.mjs" ]; then
-        jq '.statusLine //= {
-            type: "command",
-            command: "sh ${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hud/omc-hud-cache.sh ${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hud/omc-hud.mjs"
-        }' "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
+    # Sem o setup, o plugin do OMC fica instalado mas "mudo": falta o ~/.claude/CLAUDE.md
+    # (as instruções de orquestração) e o HUD. Com o plugin habilitado, o `omc setup`
+    # só grava o CLAUDE.md, o ~/.claude/hud e a statusLine; hooks, agentes e skills
+    # continuam vindo do plugin. É idempotente e não sobrescreve statusLine de terceiros.
+    nodenv rehash 2>/dev/null || true
+    info omc "running omc setup (CLAUDE.md + HUD)"
+    if omc setup --quiet </dev/null; then
+        ok omc "omc setup done"
     else
-        warn claude "run /oh-my-claudecode:omc-setup inside claude to install the HUD and CLAUDE.md"
+        warn omc "omc setup failed, run /oh-my-claudecode:omc-setup inside claude"
     fi
 
     # Roteamento de modelos do OMC pelos tiers do gateway LiteLLM
